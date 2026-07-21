@@ -61,6 +61,12 @@
     text-transform:uppercase;color:var(--terra-dark);font-weight:600;margin-bottom:20px
   }
   .eyebrow::before{content:"";width:26px;height:1.5px;background:var(--terra)}
+  .title-pill{
+    display:inline-block;font-family:'Poppins',sans-serif;font-size:.74rem;
+    letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+    color:var(--terra-dark);background:var(--terra-tint);
+    padding:8px 16px;border-radius:999px;margin-bottom:18px
+  }
   h1{font-size:clamp(2.1rem,3.9vw,3rem);letter-spacing:-.01em;max-width:none}
   h1 em{font-style:italic;color:var(--terra)}
   .lede{font-size:1.18rem;color:var(--navy-soft);margin:14px 0 0;max-width:72ch}
@@ -100,7 +106,7 @@
   }
 
   /* ---------- book mockup ---------- */
-  .cover-stage{position:relative;display:flex;justify-content:center}
+  .cover-stage{position:relative;display:flex;justify-content:center;align-self:start}
   .cover-img{
     width:100%;max-width:400px;height:auto;
     -webkit-mask-image:radial-gradient(ellipse 68% 72% at 50% 50%, #000 52%, transparent 88%);
@@ -196,6 +202,7 @@
 <header class="hero">
   <div class="wrap hero-grid">
     <div class="hero-copy">
+      <span class="title-pill">The Smart Woman's Guide to Safer Travel</span>
       <h1>You want to travel. And you want to do it <em>safely.</em></h1>
       <p class="lede">You're just not always sure what that means, what to look for, or even what questions to ask. This guide answers all of it - and goes deeper than you'd expect.</p>
       <div class="hero-proof">
@@ -205,7 +212,6 @@
       </div>
 
       <div class="buy-card">
-        <div class="bc-head">The Smart Woman's Guide to Safer Travel</div>
         <a class="cta" href="https://shop.readyjetroam.com/checkout/buy/291dc74c-2b24-4a47-9ce2-d3bcfbfbca96">Get the guide →</a>
         <div class="price-row">
           <span class="price">$19.99</span>
