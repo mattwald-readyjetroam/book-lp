@@ -54,8 +54,7 @@
   .hero{position:relative;overflow:hidden;background:
     radial-gradient(110% 70% at 88% 0%, #ece1cd 0%, transparent 55%),
     linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%)}
-  .hero-top{padding:34px 0 4px}
-  .hero-grid{display:grid;grid-template-columns:1fr .95fr;gap:48px;align-items:start;padding:16px 0 52px}
+  .hero-grid{display:grid;grid-template-columns:1fr .95fr;gap:48px;align-items:center;padding:44px 0 56px}
   .eyebrow{
     display:inline-flex;align-items:center;gap:10px;
     font-family:'Poppins',sans-serif;font-size:.74rem;letter-spacing:.18em;
@@ -65,7 +64,7 @@
   h1{font-size:clamp(2.1rem,3.9vw,3rem);letter-spacing:-.01em;max-width:none}
   h1 em{font-style:italic;color:var(--terra)}
   .lede{font-size:1.18rem;color:var(--navy-soft);margin:14px 0 0;max-width:72ch}
-  .hero-proof{display:flex;gap:30px;flex-wrap:wrap}
+  .hero-proof{display:flex;gap:30px;flex-wrap:wrap;margin-top:28px}
   .stat{display:flex;flex-direction:column}
   .stat b{font-size:1.8rem;font-weight:600;color:var(--navy);line-height:1.05}
   .stat span{font-family:'Poppins',sans-serif;font-size:.72rem;color:var(--navy-soft);letter-spacing:.06em;text-transform:uppercase;margin-top:6px}
@@ -173,8 +172,7 @@
   footer .fnote{margin-top:8px;font-size:.74rem;opacity:.75}
 
   @media(max-width:880px){
-    .hero-top{padding:26px 0 0}
-    .hero-grid{grid-template-columns:1fr;gap:30px;padding:14px 0 44px}
+    .hero-grid{grid-template-columns:1fr;gap:30px;padding:26px 0 44px}
     .cover-stage{order:-1}
     .buy-card{max-width:100%}
     .author-grid{grid-template-columns:1fr;gap:28px}
@@ -196,13 +194,11 @@
 
 <!-- HERO -->
 <header class="hero">
-  <div class="wrap hero-top">
-    <span class="eyebrow">New from Ready Jet Roam</span>
-    <h1>You want to travel. And you want to do it <em>safely.</em></h1>
-    <p class="lede">You're just not always sure what that means, what to look for, or even what questions to ask. This guide answers all of it - and goes deeper than you'd expect.</p>
-  </div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
+      <span class="eyebrow">New from Ready Jet Roam</span>
+      <h1>You want to travel. And you want to do it <em>safely.</em></h1>
+      <p class="lede">You're just not always sure what that means, what to look for, or even what questions to ask. This guide answers all of it - and goes deeper than you'd expect.</p>
       <div class="hero-proof">
         <div class="stat"><b>~100</b><span>countries</span></div>
         <div class="stat"><b>10 yrs</b><span>full-time travel</span></div>
