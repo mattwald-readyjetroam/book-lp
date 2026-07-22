@@ -124,6 +124,15 @@
   .story h2{font-size:clamp(1.9rem,3.6vw,2.7rem);color:#fbf8f2;margin-bottom:20px}
   .story p{font-size:1.14rem;color:#cfd0d6;margin-bottom:18px}
   .story .signoff{font-style:italic;color:#e9b99a;font-size:1.25rem}
+  .story-grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:56px;align-items:center}
+  .story-photo{
+    margin:0;border-radius:20px;overflow:hidden;aspect-ratio:4/5;
+    border:1px solid rgba(233,185,154,.28);box-shadow:0 30px 60px -30px rgba(0,0,0,.55);
+    background:#212a41
+  }
+  .story-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 32%;display:block}
+  .story-grid .story{max-width:none;margin:0;text-align:left}
+  .story-grid .story h2{font-size:clamp(1.7rem,3vw,2.35rem)}
 
   /* ---------- what's inside ---------- */
   .section-head{text-align:center;max-width:640px;margin:0 auto 46px}
@@ -183,6 +192,9 @@
     .buy-card{max-width:100%}
     .author-grid{grid-template-columns:1fr;gap:28px}
     .author-photo{max-width:280px;margin:0 auto}
+    .story-grid{grid-template-columns:1fr;gap:34px}
+    .story-photo{max-width:340px;margin:0 auto}
+    .story-grid .story{text-align:center}
     .final-grid{grid-template-columns:1fr;gap:36px;padding:54px 0}
     .grid{grid-template-columns:1fr}
     .band{padding:56px 0}
@@ -237,12 +249,17 @@
 
 <!-- STORY -->
 <section class="band band-navy">
-  <div class="wrap story">
+  <div class="wrap story-grid">
+    <figure class="story-photo">
+      <img src="lisa-safer-travel.jpg" alt="Lisa, author of The Smart Woman's Guide to Safer Travel, holding a tablet showing the book cover" loading="lazy" onerror="this.style.display='none'">
+    </figure>
+    <div class="story">
     <span class="eyebrow">Why I wrote it</span>
     <h2>You're not afraid of travel. You're tired of running the what-ifs.</h2>
     <p>The part that wonders if you look like an easy mark. The one that lies awake the first night in a new room. Not because anything's wrong with you - because no one ever really taught you what to look for.</p>
     <p>I'm Lisa. My husband Matt and I have traveled full time for nearly a decade - carry-on only, through close to 100 countries. This is the guide I wish I'd had when I started: practical, experience-based, and not about fear. It's about quietly reducing your vulnerability before problems start, so you can relax and enjoy the trip.</p>
     <p class="signoff">So I put everything I trust into one place.</p>
+    </div>
   </div>
 </section>
 
