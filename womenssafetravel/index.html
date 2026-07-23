@@ -74,9 +74,9 @@
     color:var(--terra-dark);background:var(--terra-tint);
     padding:8px 16px;border-radius:999px;margin-bottom:18px
   }
-  h1{font-size:clamp(2.1rem,3.9vw,3rem);letter-spacing:-.01em;max-width:none}
+  h1{font-size:clamp(2.1rem,3.9vw,3rem);letter-spacing:-.01em;max-width:none;line-height:1}
   h1 em{font-style:italic;color:var(--terra)}
-  .lede{font-size:1.18rem;color:var(--navy-soft);margin:14px 0 0;max-width:72ch}
+  .lede{font-size:1.18rem;color:var(--navy-soft);margin:14px 0 0;max-width:72ch;line-height:1.4}
   .hero-side{grid-area:side;align-self:start;display:flex;flex-direction:column;align-items:center}
   .author-mini{
     margin-top:24px;max-width:400px;width:100%;
@@ -92,7 +92,7 @@
   /* ---------- buy card ---------- */
   .buy-card{
     background:var(--card);border:1px solid var(--line);border-radius:16px;
-    padding:24px 26px 22px;box-shadow:var(--shadow);max-width:440px;margin-top:20px
+    padding:24px 26px 22px;box-shadow:var(--shadow);max-width:440px;margin-top:10px
   }
   .bc-head{font-size:1.32rem;font-weight:600;margin-bottom:12px}
   .price-row{display:flex;align-items:baseline;gap:12px;margin-top:14px;justify-content:center}
@@ -122,7 +122,7 @@
   /* ---------- book mockup ---------- */
   .cover-stage{position:relative;display:flex;justify-content:center}
   .cover-img{
-    width:100%;max-width:400px;height:auto;
+    width:100%;max-width:328px;height:auto;
     -webkit-mask-image:radial-gradient(ellipse 68% 72% at 50% 50%, #000 52%, transparent 88%);
     mask-image:radial-gradient(ellipse 68% 72% at 50% 50%, #000 52%, transparent 88%);
     transition:transform .5s ease
