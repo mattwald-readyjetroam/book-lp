@@ -55,7 +55,13 @@
   .hero{position:relative;overflow:hidden;background:
     radial-gradient(110% 70% at 88% 0%, #ece1cd 0%, transparent 55%),
     linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%)}
-  .hero-grid{display:grid;grid-template-columns:1fr .95fr;gap:48px;align-items:center;padding:44px 0 56px}
+  .hero-grid{
+    display:grid;grid-template-columns:1fr .95fr;
+    grid-template-areas:"copy side" "buy side";grid-template-rows:auto auto;
+    column-gap:48px;row-gap:0;align-items:start;padding:44px 0 56px
+  }
+  .hero-copy{grid-area:copy}
+  .hero-grid>.buy-card{grid-area:buy}
   .eyebrow{
     display:inline-flex;align-items:center;gap:10px;
     font-family:'Poppins',sans-serif;font-size:.74rem;letter-spacing:.18em;
@@ -71,7 +77,7 @@
   h1{font-size:clamp(2.1rem,3.9vw,3rem);letter-spacing:-.01em;max-width:none}
   h1 em{font-style:italic;color:var(--terra)}
   .lede{font-size:1.18rem;color:var(--navy-soft);margin:14px 0 0;max-width:72ch}
-  .hero-side{align-self:start;display:flex;flex-direction:column;align-items:center}
+  .hero-side{grid-area:side;align-self:start;display:flex;flex-direction:column;align-items:center}
   .author-mini{
     margin-top:24px;max-width:400px;width:100%;
     border-top:1px solid var(--line);padding-top:18px;text-align:center
@@ -195,11 +201,13 @@
   footer .fnote{margin-top:8px;font-size:.74rem;opacity:.75}
 
   @media(max-width:880px){
-    .hero-grid{grid-template-columns:1fr;gap:30px;padding:26px 0 44px}
+    .hero-grid{display:flex;flex-direction:column;align-items:stretch;gap:26px;padding:22px 0 40px}
     .hero-side{display:contents}
-    .cover-stage{order:-1}
-    .hero-copy{order:0}
-    .author-mini{order:1;margin-left:auto;margin-right:auto}
+    .hero-copy{order:1}
+    .cover-stage{order:2}
+    .hero-grid>.buy-card{order:3;margin-top:0}
+    .author-mini{order:4;margin-top:0;margin-left:auto;margin-right:auto}
+    .cover-img{max-width:236px}
     .buy-card{max-width:100%}
     .author-grid{grid-template-columns:1fr;gap:28px}
     .author-photo{max-width:280px;margin:0 auto}
@@ -227,8 +235,9 @@
       <span class="title-pill">The Smart Woman's Guide to Safer Travel</span>
       <h1>You want to travel. And you want to do it <em>safely.</em></h1>
       <p class="lede">You're just not always sure what that means, what to look for, or even what questions to ask. This guide answers all of it - and goes deeper than you'd expect.</p>
+    </div>
 
-      <div class="buy-card">
+    <div class="buy-card">
         <a class="cta" href="https://shop.readyjetroam.com/checkout/buy/291dc74c-2b24-4a47-9ce2-d3bcfbfbca96">Get the guide →</a>
         <div class="price-row">
           <span class="price">$19.99</span>
@@ -244,7 +253,6 @@
           Secure checkout · Card, PayPal, Google Pay
         </div>
       </div>
-    </div>
 
     <div class="hero-side">
       <div class="cover-stage">
