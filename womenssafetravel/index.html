@@ -246,6 +246,37 @@
     .buy-card{padding:22px 20px}
     .cover{width:270px}
   }
+
+  /* ---------- sticky CTA ---------- */
+  .sticky-cta{
+    position:fixed;left:0;right:0;bottom:0;z-index:60;
+    background:var(--card);border-top:1px solid var(--line);
+    box-shadow:0 -12px 30px -18px rgba(30,42,71,.45);
+    padding:10px 0;transform:translateY(115%);transition:transform .35s ease;
+    will-change:transform
+  }
+  .sticky-cta.show{transform:translateY(0)}
+  .sticky-inner{display:flex;align-items:center;justify-content:space-between;gap:18px}
+  .sticky-info{display:flex;align-items:baseline;gap:14px;min-width:0}
+  .sticky-title{
+    font-family:'EB Garamond',serif;font-size:1.06rem;font-weight:600;color:var(--navy);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+  }
+  .sticky-price{font-family:'Poppins',sans-serif;font-weight:700;color:var(--navy);font-size:1.05rem}
+  .sticky-btn{
+    flex:none;background:var(--terra);color:#fff;text-decoration:none;
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:.95rem;letter-spacing:.01em;
+    padding:12px 24px;border-radius:11px;box-shadow:0 10px 20px -12px rgba(165,86,60,.85);
+    transition:background .2s,transform .1s
+  }
+  .sticky-btn:hover{background:var(--terra-dark)}
+  .sticky-btn:active{transform:translateY(1px)}
+  @media(max-width:600px){
+    .sticky-title{display:none}
+    .sticky-price{font-size:1.12rem}
+    .sticky-btn{flex:1;text-align:center;padding:13px 16px}
+  }
+  @media(prefers-reduced-motion:reduce){ .sticky-cta{transition:none} }
 </style>
 </head>
 <body>
@@ -445,6 +476,42 @@
     </div>
   </div>
 </footer>
+
+<!-- STICKY CTA -->
+<div class="sticky-cta" id="stickyCta" aria-hidden="true">
+  <div class="wrap sticky-inner">
+    <div class="sticky-info">
+      <span class="sticky-title">The Smart Woman's Guide to Safer Travel</span>
+      <span class="sticky-price">$19.99</span>
+    </div>
+    <a class="sticky-btn" href="https://shop.readyjetroam.com/checkout/buy/291dc74c-2b24-4a47-9ce2-d3bcfbfbca96">Get the guide →</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var bar = document.getElementById('stickyCta');
+  if(!bar || !('IntersectionObserver' in window)) return;
+  var hero = document.querySelector('header.hero');
+  var bottomEls = [document.querySelector('.final'), document.querySelector('footer')].filter(Boolean);
+  var pastHero = false, seen = new WeakMap();
+  function nearBottom(){ return bottomEls.some(function(el){ return seen.get(el); }); }
+  function update(){
+    var show = pastHero && !nearBottom();
+    bar.classList.toggle('show', show);
+    bar.setAttribute('aria-hidden', show ? 'false' : 'true');
+  }
+  if(hero){
+    new IntersectionObserver(function(e){ pastHero = !e[0].isIntersecting; update(); },
+      {rootMargin:'-80px 0px 0px 0px'}).observe(hero);
+  }
+  var bo = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ seen.set(en.target, en.isIntersecting); });
+    update();
+  }, {threshold:0.1});
+  bottomEls.forEach(function(el){ bo.observe(el); });
+})();
+</script>
 
 </body>
 </html>
