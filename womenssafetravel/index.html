@@ -58,7 +58,7 @@
   .hero-grid{
     display:grid;grid-template-columns:1fr .95fr;
     grid-template-areas:"copy side" "buy side";grid-template-rows:auto auto;
-    column-gap:48px;row-gap:0;align-items:start;padding:44px 0 56px
+    column-gap:48px;row-gap:0;align-items:start;padding-top:44px;padding-bottom:56px
   }
   .hero-copy{grid-area:copy}
   .hero-grid>.buy-card{grid-area:buy}
@@ -201,7 +201,7 @@
   footer .fnote{margin-top:8px;font-size:.74rem;opacity:.75}
 
   @media(max-width:880px){
-    .hero-grid{display:flex;flex-direction:column;align-items:stretch;gap:26px;padding:22px 0 40px}
+    .hero-grid{display:flex;flex-direction:column;align-items:stretch;gap:26px;padding-top:22px;padding-bottom:40px}
     .hero-side{display:contents}
     .hero-copy{order:1}
     .cover-stage{order:2}
