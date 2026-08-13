@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Ready Jet Roam Shoe Finder</title>
+<meta name="description" content="A one-minute quiz that picks the only three pairs of shoes you need for your trip.">
+
+<!-- Optional brand fonts. If this line is removed the tool still works, it just falls back to system fonts. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap">
+
+<style>
+/* =========================================================================
+   BRAND TOKENS
+   [MATT: paste exact brand hex codes and font names here if you have them.
+   Everything below reads from these variables, so changing the look of the
+   whole tool means editing this one block.]
+   ========================================================================= */
+:root{
+  --teal:        #0f7c74;   /* main accent */
+  --teal-dark:   #0a5c56;   /* hover / emphasis */
+  --teal-tint:   #e2f2f0;   /* pale teal backgrounds */
+  --navy:        #1e2a47;   /* headings, matches readyjetroam.com */
+  --paper:       #fbf9f4;   /* warm page background */
+  --card:        #ffffff;   /* card background */
+  --ink:         #2b3245;   /* body text */
+  --ink-soft:    #5b6375;   /* secondary text */
+  --line:        #e5e0d4;   /* borders */
+  --badge-bg:    #0f7c74;   /* verified badge */
+  --font-head:   'EB Garamond', Georgia, serif;
+  --font-body:   'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font-body);
+  background:var(--paper);
+  color:var(--ink);
+  font-size:19px;
+  line-height:1.55;
+  padding:16px 16px 40px;
+}
+.wrap{max-width:680px;margin:0 auto}
+
+h1,h2{font-family:var(--font-head);color:var(--navy);line-height:1.15;font-weight:700}
+h1{font-size:2rem;margin-bottom:.35em}
+h2{font-size:1.5rem;margin-bottom:.4em}
+
+/* --- Header --- */
+.masthead{text-align:center;padding:18px 0 8px}
+.masthead .kicker{
+  font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--teal);font-weight:600;margin-bottom:6px;
+}
+.masthead p.tag{color:var(--ink-soft);font-size:1rem}
+
+/* --- Progress --- */
+.progress{margin:22px 0 6px}
+.progress .label{font-size:.9rem;color:var(--ink-soft);margin-bottom:8px}
+.bar{height:10px;background:var(--teal-tint);border-radius:99px;overflow:hidden}
+.bar > span{display:block;height:100%;background:var(--teal);border-radius:99px;transition:width .3s ease}
+
+/* --- Question screens --- */
+.question h2{margin-top:14px}
+.hint{color:var(--ink-soft);font-size:1rem;margin-bottom:14px}
+.options{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+
+button{font-family:var(--font-body)}
+.opt{
+  display:block;width:100%;text-align:left;cursor:pointer;
+  background:var(--card);border:2px solid var(--line);border-radius:14px;
+  padding:16px 18px;font-size:1.05rem;color:var(--ink);
+  min-height:56px;transition:border-color .15s, background .15s;
+}
+.opt .sub{display:block;font-size:.9rem;color:var(--ink-soft);margin-top:2px;font-weight:400}
+.opt:hover,.opt:focus-visible{border-color:var(--teal);background:var(--teal-tint)}
+.opt:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.opt strong{font-weight:600}
+
+.btn{
+  display:inline-block;cursor:pointer;border:none;border-radius:99px;
+  background:var(--teal);color:#fff;font-size:1.1rem;font-weight:600;
+  padding:16px 34px;min-height:56px;
+}
+.btn:hover{background:var(--teal-dark)}
+.btn:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.btn-ghost{
+  background:none;border:none;color:var(--ink-soft);cursor:pointer;
+  font-size:1rem;padding:12px 8px;min-height:48px;text-decoration:underline;
+}
+.btn-ghost:hover{color:var(--teal-dark)}
+.nav-row{margin-top:18px}
+
+/* --- Intro --- */
+.intro{text-align:left;padding-top:8px}
+.intro .rule{
+  background:var(--card);border:1px solid var(--line);border-left:5px solid var(--teal);
+  border-radius:12px;padding:16px 18px;margin:18px 0;
+}
+.intro .rule p{margin-bottom:8px}
+.intro .rule p:last-child{margin-bottom:0}
+.intro ol{margin:10px 0 0 22px}
+.intro li{margin-bottom:6px}
+.center{text-align:center}
+
+/* --- Results --- */
+.results h2.title{font-size:1.9rem;margin:20px 0 4px}
+.results .subtitle{color:var(--ink-soft);margin-bottom:20px}
+.slot-card{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:20px;margin-bottom:18px;box-shadow:0 10px 24px -18px rgba(30,42,71,.35);
+}
+.slot-card .slot-name{
+  font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--teal);font-weight:700;margin-bottom:4px;
+}
+.slot-card h3{font-family:var(--font-head);color:var(--navy);font-size:1.35rem;margin-bottom:8px}
+.slot-card .why-slot{color:var(--ink-soft);font-size:.98rem;margin-bottom:14px}
+.pick{display:flex;gap:14px;align-items:flex-start}
+.pick-img{
+  flex:0 0 88px;width:88px;height:88px;border-radius:12px;background:var(--teal-tint);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  color:var(--teal-dark);font-weight:700;font-size:1.3rem;overflow:hidden;
+}
+.pick-img img{width:100%;height:100%;object-fit:cover}
+.pick-img .ph-note{font-size:.55rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase}
+.pick-info{flex:1;min-width:0}
+.pick-info .name{font-weight:600;font-size:1.08rem;color:var(--navy)}
+.pick-info .brand{color:var(--ink-soft);font-size:.9rem;margin-bottom:6px}
+.badge{
+  display:inline-block;background:var(--badge-bg);color:#fff;border-radius:99px;
+  font-size:.78rem;font-weight:600;padding:4px 12px;margin:4px 0 8px;
+}
+.fits{
+  display:inline-block;background:var(--teal-tint);color:var(--teal-dark);border-radius:99px;
+  font-size:.78rem;font-weight:600;padding:4px 12px;margin:4px 0 8px;
+}
+.pick-info .why{font-size:.98rem;margin-bottom:12px}
+.buy{
+  display:inline-block;background:var(--teal);color:#fff;text-decoration:none;
+  border-radius:99px;font-weight:600;font-size:.98rem;padding:12px 22px;min-height:48px;
+}
+.buy:hover{background:var(--teal-dark)}
+.verified-date{font-size:.78rem;color:var(--ink-soft);margin-top:10px}
+
+.tips{background:var(--teal-tint);border-radius:16px;padding:20px;margin:24px 0}
+.tips h3{font-family:var(--font-head);color:var(--navy);font-size:1.25rem;margin-bottom:10px}
+.tips ul{margin-left:20px}
+.tips li{margin-bottom:8px}
+.tips li:last-child{margin-bottom:0}
+
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 4px}
+
+/* --- Footer --- */
+.foot{margin-top:30px;border-top:1px solid var(--line);padding-top:20px;font-size:.92rem;color:var(--ink-soft)}
+.foot p{margin-bottom:12px}
+.foot a{color:var(--teal-dark)}
+.cta{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:16px 18px;font-size:1rem;color:var(--ink);
+}
+
+/* --- Print --- */
+@media print{
+  body{background:#fff;color:#000;font-size:12pt;padding:0}
+  .no-print,.buy,.actions,.masthead .kicker{display:none !important}
+  .slot-card{box-shadow:none;border:1px solid #999;break-inside:avoid}
+  .tips{background:#fff;border:1px solid #999}
+  a{color:#000;text-decoration:none}
+  .foot a[href]:after{content:" (" attr(href) ")";font-size:9pt}
+}
+
+@media (max-width:420px){
+  body{font-size:18px}
+  h1{font-size:1.7rem}
+  .pick{flex-direction:row}
+  .pick-img{flex-basis:72px;width:72px;height:72px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="kicker">Ready Jet Roam</div>
+    <h1>The Shoe Finder</h1>
+    <p class="tag">Three pairs. Never more. Let's pick yours.</p>
+  </header>
+
+  <main id="app" aria-live="polite"></main>
+
+  <footer class="foot" id="site-foot"></footer>
+</div>
+
+<script>
+/* =========================================================================
+   DATA_LAST_REVIEWED
+   [MATT: bump this date whenever you check the links and picks.]
+   ========================================================================= */
+const DATA_LAST_REVIEWED = '2026-08-13';
+
+/* Amazon affiliate tag. Every Amazon link carries this automatically. */
+const AMAZON_TAG = 'readyjetroa0d-20';
+
+/* =========================================================================
+   THE SHOE LIST - this is the only thing you should ever need to edit.
+
+   Each entry:
+   id           unique key, keep it stable
+   name         display name
+   brand        brand name
+   jobs         which slot(s) it can fill: 'miles', 'nice', 'wet'
+   scenarios    which trip types it suits (see SCENARIOS below for keys)
+   sports       only for sport shoes: 'gym', 'court', 'running'
+   tags         'trail' = real hiking shoe, 'winter' = warm winter boot,
+                'dressy' = dressy enough for an event
+   gender       "women's" or 'unisex'
+   waterproof   true only if genuinely waterproof, not water resistant
+   amazonUrl    real product link WITH the tag, or the placeholder
+                '[AMAZON LINK - MATT]' (the tool builds a tagged Amazon
+                search link as a fallback so nothing is ever broken)
+   imageUrl     product photo URL, or '' to show a neat placeholder
+   oneLineWhy   one sentence shown on the results card
+   lisaVerified true ONLY for pairs we personally use. Never fake this.
+   verifiedBy   who actually uses it: 'Lisa', 'Matt', or "Lisa's mom"
+   lastVerified date you last checked the link and the pick
+   notes        anything future-you needs to remember
+   ========================================================================= */
+const SHOES = [
+
+  /* ---------- VERIFIED: pairs we actually travel with ---------- */
+  {
+    id: 'cole-haan-grand-crosscourt',
+    name: 'Grand Crosscourt white leather sneaker',
+    brand: 'Cole Haan',
+    jobs: ['miles'],
+    scenarios: ['euro-city', 'business', 'cruise'],
+    sports: [],
+    tags: [],
+    gender: "women's",
+    waterproof: false,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "A white leather sneaker that walks all day and still looks right with a dress at dinner.",
+    lisaVerified: true,
+    verifiedBy: 'Lisa',
+    lastVerified: '2026-08-13',
+    notes: "Lisa's miles pair for cities."
+  },
+  {
+    id: 'rothys-daily-flat',
+    name: 'The Daily Flat',
+    brand: "Rothy's",
+    jobs: ['nice'],
+    scenarios: ['euro-city', 'rainy-shoulder', 'cruise', 'business', 'beach-town', 'long-walking', 'safari'],
+    sports: [],
+    tags: ['dressy'],
+    gender: "women's",
+    waterproof: false,
+    amazonUrl: '[ROTHYS AFFILIATE LINK - MATT]',  /* Rothy's is a separate affiliate, NOT Amazon */
+    imageUrl: '',
+    oneLineWhy: "Packs flat, goes with everything, and it's machine washable. Yes, the whole shoe.",
+    lisaVerified: true,
+    verifiedBy: 'Lisa',
+    lastVerified: '2026-08-13',
+    notes: "Lisa's nice pair. Rothy's link is a separate affiliate, not Amazon."
+  },
+  {
+    id: 'reef-sandy',
+    name: 'Sandy flip flop',
+    brand: 'REEF',
+    jobs: ['wet'],
+    scenarios: ['beach-town', 'cruise', 'euro-city', 'rainy-shoulder', 'business', 'long-walking', 'safari'],
+    sports: [],
+    tags: [],
+    gender: "women's",
+    waterproof: true,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "Weighs nothing, dries instantly, and saves your feet from every questionable hotel shower floor.",
+    lisaVerified: true,
+    verifiedBy: 'Lisa',
+    lastVerified: '2026-08-13',
+    notes: "Lisa's wet pair."
+  },
+  {
+    id: 'on-cloud-6-waterproof',
+    name: 'Cloud 6 Waterproof',
+    brand: 'On',
+    jobs: ['miles'],
+    scenarios: ['rainy-shoulder', 'long-walking', 'euro-city', 'winter-city'],
+    sports: [],
+    tags: [],
+    gender: "women's",
+    waterproof: true,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "Actually waterproof, not 'waterproof until it rains'. I wore these on the Camino de Santiago.",
+    lisaVerified: true,
+    verifiedBy: 'Lisa',
+    lastVerified: '2026-08-13',
+    notes: "Lisa's wet-weather miles pair. Camino tested."
+  },
+  {
+    id: 'hoka-clifton-9-gtx',
+    name: 'Clifton 9 GTX',
+    brand: 'HOKA',
+    jobs: ['miles'],
+    scenarios: ['rainy-shoulder', 'long-walking', 'winter-city', 'safari'],
+    sports: [],
+    tags: [],
+    gender: "women's",
+    waterproof: true,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "Gore-Tex and marshmallow cushioning. Matt wore these on the Camino and never once complained about his feet.",
+    lisaVerified: true,
+    verifiedBy: 'Matt',
+    lastVerified: '2026-08-13',
+    notes: "Matt's wet-weather pair. Camino tested."
+  },
+  {
+    id: 'merrell-walking',
+    name: 'Walking shoes',
+    brand: 'Merrell',
+    jobs: ['miles'],
+    scenarios: ['long-walking', 'safari', 'euro-city'],
+    sports: [],
+    tags: [],
+    gender: "women's",
+    waterproof: false,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "Sensible, sturdy, and built for real miles. My mom swears by hers and she's rarely wrong.",
+    lisaVerified: true,
+    verifiedBy: "Lisa's mom",
+    lastVerified: '2026-08-13',
+    notes: "Lisa's mom's pick."
+  },
+
+  /* ---------- CANDIDATES: well reviewed, fit the job, we don't own them.
+       Keep lisaVerified false so the tool never claims we use them. ---------- */
+  {
+    id: 'skechers-go-walk',
+    name: 'Go Walk slip-on',
+    brand: 'Skechers',
+    jobs: ['miles'],
+    scenarios: ['beach-town', 'cruise', 'safari'],
+    sports: [],
+    tags: [],
+    gender: "women's",
+    waterproof: false,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "Light, breathable, and slips on and off without a fight. A warm-weather walking favorite for good reason.",
+    lisaVerified: false,
+    verifiedBy: '',
+    lastVerified: '2026-08-13',
+    notes: 'Candidate. Well reviewed for warm-weather walking.'
+  },
+  {
+    id: 'nb-608-crosstrainer',
+    name: '608 v5 cross trainer',
+    brand: 'New Balance',
+    jobs: ['miles'],
+    scenarios: [],
+    sports: ['gym'],
+    tags: [],
+    gender: "women's",
+    waterproof: false,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "A classic cross trainer that handles the hotel gym and a full day of sightseeing without needing a second pair.",
+    lisaVerified: false,
+    verifiedBy: '',
+    lastVerified: '2026-08-13',
+    notes: 'Candidate. Gym pick.'
+  },
+  {
+    id: 'asics-gel-dedicate',
+    name: 'Gel-Dedicate court shoe',
+    brand: 'ASICS',
+    jobs: ['miles'],
+    scenarios: [],
+    sports: ['court'],
+    tags: [],
+    gender: "women's",
+    waterproof: false,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "A proper court shoe for pickleball or tennis that's comfortable enough to sightsee in afterward.",
+    lisaVerified: false,
+    verifiedBy: '',
+    lastVerified: '2026-08-13',
+    notes: 'Candidate. Pickleball and tennis pick.'
+  },
+  {
+    id: 'brooks-ghost-16',
+    name: 'Ghost 16 running shoe',
+    brand: 'Brooks',
+    jobs: ['miles'],
+    scenarios: ['long-walking'],
+    sports: ['running'],
+    tags: [],
+    gender: "women's",
+    waterproof: false,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "One of the most loved neutral running shoes out there, and it doubles happily as an all-day walker.",
+    lisaVerified: false,
+    verifiedBy: '',
+    lastVerified: '2026-08-13',
+    notes: 'Candidate. Running pick.'
+  },
+  {
+    id: 'merrell-moab-3-wp',
+    name: 'Moab 3 Mid Waterproof hiking boot',
+    brand: 'Merrell',
+    jobs: ['wet'],
+    scenarios: ['safari', 'long-walking'],
+    sports: [],
+    tags: ['trail'],
+    gender: "women's",
+    waterproof: true,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "One of the best-reviewed hiking boots ever made. Grippy, waterproof, and kind to ankles on rough ground.",
+    lisaVerified: false,
+    verifiedBy: '',
+    lastVerified: '2026-08-13',
+    notes: 'Candidate. Trail pick for real hiking.'
+  },
+  {
+    id: 'sorel-out-n-about',
+    name: 'Out N About III waterproof boot',
+    brand: 'Sorel',
+    jobs: ['wet'],
+    scenarios: ['winter-city'],
+    sports: [],
+    tags: ['winter'],
+    gender: "women's",
+    waterproof: true,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "Waterproof, warm, and grippy enough for slushy sidewalks, without looking like you're headed to the Arctic.",
+    lisaVerified: false,
+    verifiedBy: '',
+    lastVerified: '2026-08-13',
+    notes: 'Candidate. Winter slush and snow pick.'
+  },
+  {
+    id: 'blondo-waterproof-bootie',
+    name: 'Villa waterproof heeled bootie',
+    brand: 'Blondo',
+    jobs: ['nice'],
+    scenarios: ['winter-city'],
+    sports: [],
+    tags: ['dressy'],
+    gender: "women's",
+    waterproof: true,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "A dressy ankle boot that's actually waterproof, so a rainy walk to dinner doesn't wreck the evening.",
+    lisaVerified: false,
+    verifiedBy: '',
+    lastVerified: '2026-08-13',
+    notes: 'Candidate. Dressy pick for cold, wet cities.'
+  },
+  {
+    id: 'vionic-sandal',
+    name: 'Dressy support sandal',
+    brand: 'Vionic',
+    jobs: ['nice'],
+    scenarios: ['beach-town', 'cruise', 'safari'],
+    sports: [],
+    tags: ['dressy'],
+    gender: "women's",
+    waterproof: false,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "A sandal with real arch support that still looks like you dressed up, not like you gave up.",
+    lisaVerified: false,
+    verifiedBy: '',
+    lastVerified: '2026-08-13',
+    notes: 'Candidate. Warm-weather dinner pick.'
+  },
+  {
+    id: 'naturalizer-block-heel',
+    name: 'Vera block heel pump',
+    brand: 'Naturalizer',
+    jobs: ['nice'],
+    scenarios: ['business', 'cruise'],
+    sports: [],
+    tags: ['dressy'],
+    gender: "women's",
+    waterproof: false,
+    amazonUrl: '[AMAZON LINK - MATT]',
+    imageUrl: '',
+    oneLineWhy: "A low block heel from a comfort brand, for when the dinner really is that kind of dinner.",
+    lisaVerified: false,
+    verifiedBy: '',
+    lastVerified: '2026-08-13',
+    notes: 'Candidate. Dressier backup to the flat.'
+  }
+];
+
+/* =========================================================================
+   QUIZ QUESTIONS - edit labels freely, keep the value keys stable.
+   ========================================================================= */
+const SCENARIOS = {
+  'euro-city':      'The European city trip',
+  'rainy-shoulder': 'The rainy shoulder season trip',
+  'beach-town':     'The beach and town week',
+  'cruise':         'The cruise',
+  'long-walking':   'The long walking trip',
+  'safari':         'The safari or adventure trip',
+  'winter-city':    'The winter city break',
+  'business':       'The business trip with a weekend on the end'
+};
+
+const QUESTIONS = [
+  {
+    key: 'region',
+    title: "Where are you headed?",
+    options: [
+      { value: 'europe',     label: 'Europe' },
+      { value: 'uk-scandi',  label: 'UK, Ireland or Scandinavia' },
+      { value: 'warm',       label: 'Somewhere warm', sub: 'Beach, islands, the tropics' },
+      { value: 'usa-canada', label: 'USA or Canada' },
+      { value: 'aus-nz',     label: 'Australia or New Zealand' },
+      { value: 'mixed',      label: 'A mix, or somewhere else' }
+    ]
+  },
+  {
+    key: 'season',
+    title: "What season will it be when you're there?",
+    hint: "Their season, not yours. September in Australia is spring.",
+    options: [
+      { value: 'spring', label: 'Spring' },
+      { value: 'summer', label: 'Summer' },
+      { value: 'fall',   label: 'Fall / Autumn' },
+      { value: 'winter', label: 'Winter' }
+    ]
+  },
+  {
+    key: 'length',
+    title: "How long are you going for?",
+    options: [
+      { value: 'short',  label: 'Under a week' },
+      { value: 'medium', label: 'One to two weeks' },
+      { value: 'long',   label: 'Longer than two weeks' }
+    ]
+  },
+  {
+    key: 'scenario',
+    title: "Which of these sounds most like your trip?",
+    options: [
+      { value: 'euro-city',      label: SCENARIOS['euro-city'],      sub: 'Cobblestones, cafes, a lot of walking' },
+      { value: 'rainy-shoulder', label: SCENARIOS['rainy-shoulder'], sub: 'Off-season prices, on-season rain' },
+      { value: 'beach-town',     label: SCENARIOS['beach-town'],     sub: 'Sand in the morning, dinner in town' },
+      { value: 'cruise',         label: SCENARIOS['cruise'],         sub: 'Sea days, port days, one dressy night' },
+      { value: 'long-walking',   label: SCENARIOS['long-walking'],   sub: 'A Camino, a walking tour, serious daily miles' },
+      { value: 'safari',         label: SCENARIOS['safari'],         sub: 'Dust, wildlife, early mornings' },
+      { value: 'winter-city',    label: SCENARIOS['winter-city'],    sub: 'Christmas markets, museums, cold toes' },
+      { value: 'business',       label: SCENARIOS['business'],       sub: "Meetings first, then you're free" }
+    ]
+  },
+  {
+    key: 'hiking',
+    title: "Will you do any real hiking?",
+    hint: "I mean actual trails. Cobblestones don't count.",
+    options: [
+      { value: 'yes', label: 'Yes, actual trails' },
+      { value: 'no',  label: 'No, just regular walking' }
+    ]
+  },
+  {
+    key: 'sport',
+    title: "Will you work out or play a sport while you're away?",
+    options: [
+      { value: 'none',    label: "No, I'm on vacation" },
+      { value: 'gym',     label: 'Gym or fitness classes' },
+      { value: 'court',   label: 'Pickleball or tennis' },
+      { value: 'running', label: 'Running' }
+    ]
+  },
+  {
+    key: 'dressy',
+    title: "Any dressy dinners or events?",
+    options: [
+      { value: 'yes', label: 'Yes, at least one' },
+      { value: 'no',  label: 'No, casual the whole way' }
+    ]
+  },
+  {
+    key: 'rain',
+    title: "Are you expecting much rain?",
+    options: [
+      { value: 'probably',   label: 'Probably' },
+      { value: 'not-really', label: 'Not really' },
+      { value: 'no-idea',    label: "Honestly, no idea", sub: "I'll make a sensible guess from your destination" }
+    ]
+  }
+];
+
+/* =========================================================================
+   RECOMMENDATION LOGIC
+   ========================================================================= */
+function buildContext(a){
+  // Would I call this destination genuinely wet if the user isn't sure?
+  const autoWet =
+    (a.region === 'uk-scandi' && a.season !== 'summer') ||
+    (a.season === 'winter' && a.region !== 'warm');
+
+  const wetClimate =
+    a.rain === 'probably' ||
+    a.scenario === 'rainy-shoulder' ||
+    a.scenario === 'winter-city' ||
+    (a.rain === 'no-idea' && autoWet);
+
+  return {
+    region: a.region,
+    season: a.season,
+    length: a.length,
+    scenario: a.scenario,
+    hiking: a.hiking === 'yes',
+    sport: a.sport,
+    dressy: a.dressy === 'yes',
+    wetClimate: wetClimate,
+    cold: a.season === 'winter' || a.scenario === 'winter-city'
+  };
+}
+
+function scoreShoe(shoe, job, ctx){
+  let score = 0;
+  if (shoe.scenarios.includes(ctx.scenario)) score += 4;
+  if (shoe.lisaVerified) score += 2;
+  if (ctx.wetClimate && shoe.waterproof) score += 1;
+  if (ctx.dressy && job === 'nice' && shoe.tags.includes('dressy')) score += 1;
+  return score;
+}
+
+function pickShoe(job, ctx, usedIds){
+  let pool = SHOES.filter(function(s){
+    if (!s.jobs.includes(job)) return false;
+    if (usedIds.indexOf(s.id) !== -1) return false;
+    if (s.gender !== "women's" && s.gender !== 'unisex') return false;
+    return true;
+  });
+
+  // Hard rules from the three-pair system:
+  if (job === 'miles'){
+    if (ctx.sport !== 'none'){
+      // The sport shoe BECOMES the miles pair. It doesn't get added.
+      const sportPool = pool.filter(function(s){ return s.sports.includes(ctx.sport); });
+      if (sportPool.length) pool = sportPool;
+    } else if (ctx.wetClimate){
+      // Genuinely wet trip: the miles pair must be waterproof, not water resistant.
+      const wpPool = pool.filter(function(s){ return s.waterproof; });
+      if (wpPool.length) pool = wpPool;
+    }
+  }
+  if (job === 'wet'){
+    if (ctx.hiking){
+      // Real hiking: trail shoes take the wet slot. Sandals stay home.
+      const trailPool = pool.filter(function(s){ return s.tags.includes('trail'); });
+      if (trailPool.length) pool = trailPool;
+    } else if (ctx.scenario === 'winter-city' || (ctx.cold && ctx.region !== 'warm')){
+      // Winter: the trip's version of water is slush. Warm waterproof boot.
+      const winterPool = pool.filter(function(s){ return s.tags.includes('winter'); });
+      if (winterPool.length) pool = winterPool;
+    }
+  }
+
+  pool.sort(function(a, b){
+    const diff = scoreShoe(b, job, ctx) - scoreShoe(a, job, ctx);
+    if (diff !== 0) return diff;
+    return SHOES.indexOf(a) - SHOES.indexOf(b); // stable: earlier entry wins ties
+  });
+  return pool[0] || null;
+}
+
+function slotCopy(job, ctx){
+  if (job === 'miles'){
+    if (ctx.sport !== 'none'){
+      const sportName = ctx.sport === 'gym' ? 'work out' : (ctx.sport === 'court' ? 'play' : 'run');
+      let copy = "You said you'll " + sportName + " on this trip, so your sport shoe does double duty: it IS your miles pair. It doesn't get its own slot, it earns this one.";
+      if (ctx.wetClimate) copy += " Fair warning: it's not waterproof, so pack a spare pair of merino socks and let it dry overnight.";
+      return copy;
+    }
+    if (ctx.wetClimate){
+      return "You're headed somewhere genuinely wet, so water resistant won't cut it. This pair needs to be waterproof, full stop. Wet feet are annoying. Wet feet in a shoe you're also breaking in is a bad day.";
+    }
+    return "This is the pair you'll live in. Cobblestones, museum floors, the long way back to the hotel. If you'd walk 20,000 steps in it without regret, it belongs here.";
+  }
+  if (job === 'nice'){
+    if (ctx.scenario === 'winter-city'){
+      return "Dinner still happens in winter, and it usually involves a wet sidewalk on the way. This pair gets you there feeling like yourself, with dry feet.";
+    }
+    if (ctx.dressy){
+      return "You've got at least one dinner where you'll want to feel like yourself, not like someone who packed sneakers. This pair is for that night.";
+    }
+    return "Even a casual trip has one evening that turns into something. One pair that isn't a sneaker saves that evening, and it barely takes any space.";
+  }
+  // wet
+  if (ctx.hiking){
+    return "You're doing real hiking, so trail shoes take this slot and the sandals stay home. Trails beat beaches for this spot, every time.";
+  }
+  if (ctx.scenario === 'winter-city' || (ctx.cold && ctx.region !== 'warm')){
+    return "Your trip's version of water is slush, snowbanks and cold puddles. This slot goes to a boot that keeps all of that on the outside.";
+  }
+  if (ctx.scenario === 'beach-town' || ctx.scenario === 'cruise' || ctx.region === 'warm'){
+    return "Beach, pool deck, hotel shower. This pair handles every wet surface on the trip and takes up about as much room as a paperback.";
+  }
+  return "Every trip has water somewhere: a hotel shower you don't trust, a pool, a surprise warm afternoon. This pair weighs nothing and covers all of it.";
+}
+
+const TIPS = {
+  plane:  "Wear your bulkiest pair on the plane. Suitcase space is for the light stuff.",
+  breakin:"Break new shoes in for a few weeks before you go, never the week you fly. Wet feet are annoying. Wet feet in a shoe you're also breaking in is a bad day.",
+  merino: "Pack merino socks. Merino insulates even when it's damp. Cotton doesn't."
+};
+
+function pickTips(ctx){
+  const tips = [TIPS.plane];
+  if (ctx.wetClimate || ctx.cold || ctx.hiking) tips.push(TIPS.merino);
+  if (ctx.hiking || ctx.scenario === 'long-walking' || ctx.length === 'long') tips.push(TIPS.breakin);
+  if (tips.length < 2) tips.push(TIPS.breakin);
+  return tips.slice(0, 3);
+}
+
+function recommend(answers){
+  const ctx = buildContext(answers);
+  const used = [];
+  const slots = ['miles', 'nice', 'wet'].map(function(job){
+    const shoe = pickShoe(job, ctx, used);
+    if (shoe) used.push(shoe.id);
+    return { job: job, shoe: shoe, why: slotCopy(job, ctx) };
+  });
+  return { ctx: ctx, slots: slots, tips: pickTips(ctx) };
+}
+
+/* Builds a working buy link. Real URLs pass through untouched; placeholder
+   entries fall back to a tagged Amazon search so no button is ever dead. */
+function buyUrl(shoe){
+  const url = (shoe.amazonUrl || '').trim();
+  if (url.indexOf('http') === 0) return url;
+  if (url.indexOf('ROTHYS') !== -1) return 'https://rothys.com/';
+  const q = encodeURIComponent(shoe.brand + ' ' + shoe.name + " women");
+  return 'https://www.amazon.com/s?k=' + q + '&tag=' + AMAZON_TAG;
+}
+
+function buyLabel(shoe){
+  if ((shoe.amazonUrl || '').indexOf('ROTHYS') !== -1) return "See it at Rothy's";
+  return 'See it on Amazon';
+}
+
+/* =========================================================================
+   UI - everything below just renders the data and logic above.
+   ========================================================================= */
+if (typeof document !== 'undefined'){ (function(){
+
+  const app = document.getElementById('app');
+  const foot = document.getElementById('site-foot');
+  const answers = {};
+  let step = -1; // -1 = intro screen
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  const SLOT_NAMES = { miles: 'The miles pair', nice: 'The nice pair', wet: 'The wet pair' };
+
+  function renderFooter(showMaintenance){
+    let html = '';
+    html += '<div class="cta no-print">Want the rest of your suitcase sorted too? Try my free <a href="https://readyjetroam.com/packing-app/">Packing Assistant</a>.</div>';
+    html += '<p style="margin-top:16px">As an Amazon Associate I earn a small commission if you purchase through our links - at no extra cost to you :)</p>';
+    if (showMaintenance){
+      html += '<p>Found a link that\'s out of stock or a pair I should know about? Hit reply on any newsletter or email <a href="mailto:lisa@readyjetroam.com">lisa@readyjetroam.com</a> - I keep this updated.</p>';
+    }
+    html += '<p>Recommendations last reviewed: ' + esc(DATA_LAST_REVIEWED) + '</p>';
+    foot.innerHTML = html;
+  }
+
+  function renderIntro(){
+    app.innerHTML =
+      '<div class="intro">' +
+        '<div class="rule">' +
+          "<p><strong>Here's my whole packing philosophy in one rule:</strong> you never pack more than three pairs of shoes, because every pair has a job.</p>" +
+          '<ol>' +
+            "<li><strong>The miles pair</strong> - whatever you'll walk 20,000 steps in without regret.</li>" +
+            "<li><strong>The nice pair</strong> - whatever gets you into dinner feeling like yourself.</li>" +
+            "<li><strong>The wet pair</strong> - beach, pool, hotel shower, rain. Whatever your trip's version of water is.</li>" +
+          '</ol>' +
+        '</div>' +
+        "<p>The shoes change by trip. The number never does. Answer eight quick questions and I'll fill your three slots for this specific trip. Takes about a minute, no email required.</p>" +
+        '<div class="nav-row center" style="margin-top:24px">' +
+          '<button class="btn" id="start-btn">Find my three pairs</button>' +
+        '</div>' +
+      '</div>';
+    document.getElementById('start-btn').addEventListener('click', function(){
+      step = 0; render();
+    });
+    renderFooter(false);
+  }
+
+  function renderQuestion(){
+    const q = QUESTIONS[step];
+    const pct = Math.round((step / QUESTIONS.length) * 100);
+    let html =
+      '<div class="progress no-print">' +
+        '<div class="label">Question ' + (step + 1) + ' of ' + QUESTIONS.length + '</div>' +
+        '<div class="bar"><span style="width:' + pct + '%"></span></div>' +
+      '</div>' +
+      '<div class="question">' +
+        '<h2>' + esc(q.title) + '</h2>' +
+        (q.hint ? '<p class="hint">' + esc(q.hint) + '</p>' : '') +
+        '<div class="options">';
+    q.options.forEach(function(o){
+      html += '<button class="opt" data-value="' + esc(o.value) + '"><strong>' + esc(o.label) + '</strong>' +
+              (o.sub ? '<span class="sub">' + esc(o.sub) + '</span>' : '') + '</button>';
+    });
+    html += '</div><div class="nav-row"><button class="btn-ghost" id="back-btn">&larr; Back</button></div></div>';
+    app.innerHTML = html;
+
+    app.querySelectorAll('.opt').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        answers[q.key] = btn.getAttribute('data-value');
+        step += 1;
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+    document.getElementById('back-btn').addEventListener('click', function(){
+      step -= 1;
+      render();
+    });
+    renderFooter(false);
+  }
+
+  function shoeCard(slot){
+    const shoe = slot.shoe;
+    let html = '<div class="slot-card">';
+    html += '<div class="slot-name">' + esc(SLOT_NAMES[slot.job]) + '</div>';
+    html += '<p class="why-slot">' + esc(slot.why) + '</p>';
+    if (!shoe){
+      html += "<p>I don't have a pick loaded for this combination yet. Email me and I'll fix that.</p></div>";
+      return html;
+    }
+    html += '<div class="pick">';
+    if (shoe.imageUrl){
+      html += '<div class="pick-img"><img src="' + esc(shoe.imageUrl) + '" alt="' + esc(shoe.brand + ' ' + shoe.name) + '"></div>';
+    } else {
+      html += '<div class="pick-img" aria-hidden="true"><span>' + esc(shoe.brand.charAt(0)) + '</span><span class="ph-note">photo soon</span></div>';
+    }
+    html += '<div class="pick-info">';
+    html += '<div class="name">' + esc(shoe.brand + ' ' + shoe.name) + '</div>';
+    if (shoe.lisaVerified){
+      const who = shoe.verifiedBy || 'Lisa';
+      let badgeText = 'The pair I actually travel with';
+      if (who === 'Matt') badgeText = "Matt's pair - he actually travels with these";
+      if (who === "Lisa's mom") badgeText = 'My mom swears by these';
+      html += '<span class="badge">&#10003; ' + esc(badgeText) + '</span>';
+    } else {
+      html += '<span class="fits">Fits this job - well reviewed, not one I own</span>';
+    }
+    html += '<p class="why">' + esc(shoe.oneLineWhy) + '</p>';
+    html += '<a class="buy" href="' + esc(buyUrl(shoe)) + '" target="_blank" rel="noopener sponsored">' + esc(buyLabel(shoe)) + '</a>';
+    html += '<div class="verified-date" title="The date I last checked this link and this pick">Link checked: ' + esc(shoe.lastVerified) + '</div>';
+    html += '</div></div></div>';
+    return html;
+  }
+
+  function renderResults(){
+    const rec = recommend(answers);
+    let html = '<div class="results">';
+    html += '<h2 class="title">Your three pairs</h2>';
+    html += '<p class="subtitle">For ' + esc((SCENARIOS[rec.ctx.scenario] || 'your trip').toLowerCase()) + '. Three slots, three shoes, zero regrets.</p>';
+    rec.slots.forEach(function(slot){ html += shoeCard(slot); });
+    html += '<div class="tips"><h3>Before you zip the suitcase</h3><ul>';
+    rec.tips.forEach(function(t){ html += '<li>' + esc(t) + '</li>'; });
+    html += '</ul></div>';
+    html += '<div class="actions no-print">' +
+              '<button class="btn" id="print-btn">Print or save this</button>' +
+              '<button class="btn-ghost" id="retake-btn">Start over</button>' +
+            '</div>';
+    html += '</div>';
+    app.innerHTML = html;
+
+    document.getElementById('print-btn').addEventListener('click', function(){ window.print(); });
+    document.getElementById('retake-btn').addEventListener('click', function(){
+      for (const k in answers) delete answers[k];
+      step = -1;
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    renderFooter(true);
+  }
+
+  function render(){
+    if (step < 0) renderIntro();
+    else if (step < QUESTIONS.length) renderQuestion();
+    else renderResults();
+  }
+
+  render();
+})(); }
+</script>
+</body>
+</html>
