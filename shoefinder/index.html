@@ -343,6 +343,17 @@ const DATA_LAST_REVIEWED = '2026-08-13';
 const AMAZON_TAG = 'readyjetroa0d-20';
 
 /* =========================================================================
+   INTERIM AFFILIATE DESTINATIONS
+   These are your existing Ready Jet Roam affiliate links. A shoe only falls
+   back to one of these while its own amazonUrl is still a placeholder, and
+   the button label changes to match so it never pretends to be a direct
+   product link. Paste a real product URL into a shoe and that shoe stops
+   using these automatically.
+   ========================================================================= */
+const AFFILIATE_SHOES_LIST = 'https://amzn.to/49GVekQ';                  /* your Amazon shoes list */
+const AFFILIATE_STOREFRONT = 'https://www.amazon.com/shop/readyjetroam'; /* your Amazon storefront */
+
+/* =========================================================================
    IMAGES
    [MATT: swap these for any other uploaded image and the page picks it up.
    Leave either one blank ('') and the tool falls back on its own: the logo
@@ -365,14 +376,16 @@ const HERO_PHOTO_URL = 'https://readyjetroam.com/wp-content/uploads/2026/07/read
    gender       "women's" or 'unisex'
    waterproof   true ONLY if genuinely waterproof, not water resistant
    amazonUrl    real product link, or the placeholder '[AMAZON LINK - MATT]'
-                (until it's filled the tool builds a tagged Amazon search
-                link, so no button is ever dead)
+                (until it's filled, the button goes to your Amazon shoe list
+                instead and relabels itself, so it still earns)
    imageUrl     product photo URL, or '' for a neat polaroid placeholder
    emoji        shown in the placeholder photo
    oneLineWhy   one sentence, shown on the results card
    lisaVerified true ONLY for pairs we personally use. Never fake this.
    verifiedBy   who actually uses it: 'Lisa', 'Matt', or "Lisa's mom"
-   lastVerified date you last checked the link and the pick
+   lastVerified date YOU last opened the link and confirmed the shoe is still
+                sold. Leave '' until that's actually happened: while it's
+                blank the card shows no date rather than claiming one.
    notes        anything future-you needs to remember
    ========================================================================= */
 const SHOES = [
@@ -388,7 +401,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '👟',
     oneLineWhy: "A white leather sneaker that walks all day and still looks right with a dress at dinner.",
-    lisaVerified: true, verifiedBy: 'Lisa', lastVerified: '2026-08-13',
+    lisaVerified: true, verifiedBy: 'Lisa', lastVerified: '',
     notes: "Lisa's miles pair for cities."
   },
   {
@@ -401,7 +414,7 @@ const SHOES = [
     amazonUrl: '[ROTHYS AFFILIATE LINK - MATT]',  /* separate affiliate, NOT Amazon */
     imageUrl: '', emoji: '🥿',
     oneLineWhy: "Packs flat, goes with everything, and it's machine washable. Yes, the whole shoe.",
-    lisaVerified: true, verifiedBy: 'Lisa', lastVerified: '2026-08-13',
+    lisaVerified: true, verifiedBy: 'Lisa', lastVerified: '',
     notes: "Lisa's nice pair. Rothy's link is a separate affiliate, not Amazon."
   },
   {
@@ -414,7 +427,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '🩴',
     oneLineWhy: "Weighs nothing, dries instantly, and saves your feet from every questionable hotel shower floor.",
-    lisaVerified: true, verifiedBy: 'Lisa', lastVerified: '2026-08-13',
+    lisaVerified: true, verifiedBy: 'Lisa', lastVerified: '',
     notes: "Lisa's wet pair."
   },
   {
@@ -427,7 +440,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '👟',
     oneLineWhy: "Actually waterproof, not 'waterproof until it rains'. I wore these on the Camino de Santiago.",
-    lisaVerified: true, verifiedBy: 'Lisa', lastVerified: '2026-08-13',
+    lisaVerified: true, verifiedBy: 'Lisa', lastVerified: '',
     notes: "Lisa's wet-weather miles pair. Camino tested."
   },
   {
@@ -440,7 +453,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '👟',
     oneLineWhy: "Gore-Tex and marshmallow cushioning. Matt wore these on the Camino and never once complained about his feet.",
-    lisaVerified: true, verifiedBy: 'Matt', lastVerified: '2026-08-13',
+    lisaVerified: true, verifiedBy: 'Matt', lastVerified: '',
     notes: "Matt's wet-weather pair. Camino tested."
   },
   {
@@ -453,7 +466,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '👟',
     oneLineWhy: "Sensible, sturdy, and built for real miles. My mom swears by hers and she's rarely wrong.",
-    lisaVerified: true, verifiedBy: "Lisa's mom", lastVerified: '2026-08-13',
+    lisaVerified: true, verifiedBy: "Lisa's mom", lastVerified: '',
     notes: "Lisa's mom's pick."
   },
 
@@ -469,7 +482,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '👟',
     oneLineWhy: "Light, breathable, and slips on and off without a fight. A warm-weather walking favorite for good reason.",
-    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '',
     notes: 'Candidate. Well reviewed for warm-weather walking.'
   },
   {
@@ -481,7 +494,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '🏋️',
     oneLineWhy: "A classic cross trainer that handles the hotel gym and a full day of sightseeing without needing a second pair.",
-    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '',
     notes: 'Candidate. Gym pick.'
   },
   {
@@ -493,7 +506,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '🎾',
     oneLineWhy: "A proper court shoe for pickleball or tennis that's comfortable enough to sightsee in afterward.",
-    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '',
     notes: 'Candidate. Pickleball and tennis pick.'
   },
   {
@@ -505,7 +518,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '🏃',
     oneLineWhy: "One of the most loved neutral running shoes out there, and it doubles happily as an all-day walker.",
-    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '',
     notes: 'Candidate. Running pick.'
   },
   {
@@ -517,7 +530,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '🥾',
     oneLineWhy: "One of the best-reviewed hiking boots ever made. Grippy, waterproof, and kind to ankles on rough ground.",
-    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '',
     notes: 'Candidate. Trail pick for real hiking.'
   },
   {
@@ -529,7 +542,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '🥾',
     oneLineWhy: "Waterproof, warm, and grippy enough for slushy sidewalks, without looking like you're headed to the Arctic.",
-    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '',
     notes: 'Candidate. Winter slush and snow pick.'
   },
   {
@@ -541,7 +554,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '👢',
     oneLineWhy: "A dressy ankle boot that's actually waterproof, so a rainy walk to dinner doesn't wreck the evening.",
-    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '',
     notes: 'Candidate. Dressy pick for cold, wet cities.'
   },
   {
@@ -553,7 +566,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '👡',
     oneLineWhy: "A sandal with real arch support that still looks like you dressed up, not like you gave up.",
-    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '',
     notes: 'Candidate. Warm-weather dinner pick.'
   },
   {
@@ -565,7 +578,7 @@ const SHOES = [
     amazonUrl: '[AMAZON LINK - MATT]',
     imageUrl: '', emoji: '👠',
     oneLineWhy: "A low block heel from a comfort brand, for when the dinner really is that kind of dinner.",
-    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '',
     notes: 'Candidate. Dressier backup to the flat.'
   }
 ];
@@ -811,18 +824,31 @@ function recommend(answers){
   return { ctx: ctx, slots: slots, tips: pickTips(ctx) };
 }
 
-/* Builds a working buy link. Real URLs pass through untouched; placeholders
-   fall back to a tagged Amazon search so no button is ever dead. */
+/* True once a real product URL has been pasted in for this shoe. */
+function hasRealLink(shoe){
+  return (shoe.amazonUrl || '').trim().indexOf('http') === 0;
+}
+function isRothys(shoe){
+  return (shoe.amazonUrl || '').indexOf('ROTHYS') !== -1 ||
+         (shoe.brand || '').toLowerCase().indexOf('rothy') !== -1;
+}
+
+/* Builds a working buy link. Real product URLs pass through untouched. Any
+   shoe still on a placeholder goes to one of your existing affiliate links,
+   so every button earns and none of them are dead. */
 function buyUrl(shoe){
   const url = (shoe.amazonUrl || '').trim();
   if (url.indexOf('http') === 0) return url;
-  if (url.indexOf('ROTHYS') !== -1) return 'https://rothys.com/';
-  const q = encodeURIComponent(shoe.brand + ' ' + shoe.name + ' women');
-  return 'https://www.amazon.com/s?k=' + q + '&tag=' + AMAZON_TAG;
+  // Rothy's isn't an Amazon brand, so it falls back to the storefront.
+  if (isRothys(shoe)) return AFFILIATE_STOREFRONT;
+  return AFFILIATE_SHOES_LIST;
 }
+
+/* The label always describes where the button actually goes. */
 function buyLabel(shoe){
-  if ((shoe.amazonUrl || '').indexOf('ROTHYS') !== -1) return "See it at Rothy's";
-  return 'See it on Amazon';
+  if (hasRealLink(shoe)) return isRothys(shoe) ? "See it at Rothy's" : 'See it on Amazon';
+  if (isRothys(shoe)) return 'Browse my Amazon storefront';
+  return 'Browse my Amazon shoe list';
 }
 
 /* =========================================================================
@@ -870,7 +896,7 @@ if (typeof document !== 'undefined'){ (function(){
       html += '<p>Found a link that\'s out of stock or a pair I should know about? Hit reply on any newsletter or email <a href="mailto:lisa@readyjetroam.com">lisa@readyjetroam.com</a> - I keep this updated.</p>';
     }
     html += '<p class="disc">As an Amazon Associate I earn a small commission if you purchase through our links - at no extra cost to you :)</p>';
-    html += '<p class="disc">Recommendations last reviewed: ' + esc(DATA_LAST_REVIEWED) + '</p>';
+    html += '<p class="disc">Shoe list last updated: ' + esc(DATA_LAST_REVIEWED) + '</p>';
     foot.innerHTML = html;
   }
 
@@ -969,7 +995,9 @@ if (typeof document !== 'undefined'){ (function(){
     }
     html += '<p class="why">' + esc(shoe.oneLineWhy) + '</p>';
     html += '<a class="buy" href="' + esc(buyUrl(shoe)) + '" target="_blank" rel="noopener sponsored">' + esc(buyLabel(shoe)) + '</a>';
-    html += '<div class="checked" title="The date I last checked this link and this pick">Link checked: ' + esc(shoe.lastVerified) + '</div>';
+    if (shoe.lastVerified){
+      html += '<div class="checked" title="The date I last checked this link and this pick">Link checked: ' + esc(shoe.lastVerified) + '</div>';
+    }
     html += '</div></div></div>';
     return html;
   }
