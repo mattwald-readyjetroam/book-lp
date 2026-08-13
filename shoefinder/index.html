@@ -2,225 +2,347 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Ready Jet Roam Shoe Finder</title>
-<meta name="description" content="A one-minute quiz that picks the only three pairs of shoes you need for your trip.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Shoe Finder - Ready Jet Roam</title>
+<meta name="description" content="Tell me about your trip and I'll fill your three shoe slots. Never pack more than three pairs.">
 
-<!-- Optional brand fonts. If this line is removed the tool still works, it just falls back to system fonts. -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Caveat:wght@500;600;700&family=Nunito+Sans:wght@400;600;700;800&display=swap">
 
 <style>
 /* =========================================================================
    BRAND TOKENS
-   [MATT: paste exact brand hex codes and font names here if you have them.
-   Everything below reads from these variables, so changing the look of the
-   whole tool means editing this one block.]
+   [MATT: these are matched by eye to the Packing Assistant. If you paste me
+   the real values from packing-app.css I'll drop them straight in here.
+   Fonts below are the exact ones the Packing Assistant loads.]
    ========================================================================= */
 :root{
-  --teal:        #0f7c74;   /* main accent */
-  --teal-dark:   #0a5c56;   /* hover / emphasis */
-  --teal-tint:   #e2f2f0;   /* pale teal backgrounds */
-  --navy:        #1e2a47;   /* headings, matches readyjetroam.com */
-  --paper:       #fbf9f4;   /* warm page background */
-  --card:        #ffffff;   /* card background */
-  --ink:         #2b3245;   /* body text */
-  --ink-soft:    #5b6375;   /* secondary text */
-  --line:        #e5e0d4;   /* borders */
-  --badge-bg:    #0f7c74;   /* verified badge */
-  --font-head:   'EB Garamond', Georgia, serif;
-  --font-body:   'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  --paper:      #fdf9f2;   /* warm page background */
+  --card:       #ffffff;
+  --ink:        #23323a;   /* body text */
+  --ink-soft:   #5d6f78;   /* secondary text */
+  --teal:       #0f766e;   /* main accent */
+  --teal-dark:  #115e59;   /* hover / emphasis */
+  --teal-tint:  #e3f2ef;   /* pale teal fills */
+  --coral:      #e0785c;   /* script accents, highlights */
+  --coral-soft: #fbeae3;
+  --line:       #ece3d5;   /* borders */
+  --shadow:     0 18px 40px -28px rgba(35,50,58,.45);
+  --font-head:  'Fraunces', Georgia, serif;
+  --font-body:  'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-script:'Caveat', cursive;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{
   font-family:var(--font-body);
   background:var(--paper);
   color:var(--ink);
-  font-size:19px;
-  line-height:1.55;
-  padding:16px 16px 40px;
+  font-size:18px;
+  line-height:1.6;
+  padding:0 16px 48px;
 }
-.wrap{max-width:680px;margin:0 auto}
+.wrap{max-width:700px;margin:0 auto}
+.skip-link{position:absolute;left:-9999px}
+.skip-link:focus{position:static;display:inline-block;padding:10px;background:var(--teal);color:#fff}
 
-h1,h2{font-family:var(--font-head);color:var(--navy);line-height:1.15;font-weight:700}
-h1{font-size:2rem;margin-bottom:.35em}
-h2{font-size:1.5rem;margin-bottom:.4em}
-
-/* --- Header --- */
-.masthead{text-align:center;padding:18px 0 8px}
-.masthead .kicker{
-  font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--teal);font-weight:600;margin-bottom:6px;
+/* ---------- Brand + hero ---------- */
+.brand{text-align:center;padding:22px 0 4px}
+.brand-link{display:inline-block;text-decoration:none}
+.brand-wordmark{
+  font-family:var(--font-head);font-weight:700;font-size:1.15rem;
+  letter-spacing:.02em;color:var(--ink);
 }
-.masthead p.tag{color:var(--ink-soft);font-size:1rem}
+.brand-wordmark span{color:var(--teal)}
 
-/* --- Progress --- */
-.progress{margin:22px 0 6px}
-.progress .label{font-size:.9rem;color:var(--ink-soft);margin-bottom:8px}
-.bar{height:10px;background:var(--teal-tint);border-radius:99px;overflow:hidden}
-.bar > span{display:block;height:100%;background:var(--teal);border-radius:99px;transition:width .3s ease}
+.hero{display:flex;align-items:center;gap:20px;padding:14px 0 6px}
+.hero-text{flex:1;min-width:0}
+.hero h1{
+  font-family:var(--font-head);font-weight:700;font-size:2.3rem;
+  line-height:1.08;letter-spacing:-.01em;color:var(--ink);
+}
+.hero h1 .pop{color:var(--teal)}
+.hero .tag{margin-top:12px;color:var(--ink-soft);font-size:1.02rem}
 
-/* --- Question screens --- */
-.question h2{margin-top:14px}
-.hint{color:var(--ink-soft);font-size:1rem;margin-bottom:14px}
-.options{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.polaroid{
+  flex:0 0 132px;position:relative;background:#fff;padding:10px 10px 30px;
+  border-radius:3px;box-shadow:var(--shadow);transform:rotate(3deg);
+}
+.polaroid .tape{
+  position:absolute;top:-11px;left:50%;transform:translateX(-50%) rotate(-2deg);
+  width:62px;height:22px;background:rgba(224,120,92,.28);
+  border-left:1px dashed rgba(255,255,255,.6);border-right:1px dashed rgba(255,255,255,.6);
+}
+.polaroid .photo{
+  width:112px;height:112px;background:var(--teal-tint);border-radius:2px;
+  display:flex;align-items:center;justify-content:center;font-size:2.6rem;
+}
+.polaroid .caption{
+  font-family:var(--font-script);font-size:1.05rem;color:var(--ink-soft);
+  text-align:center;margin-top:6px;line-height:1;
+}
 
-button{font-family:var(--font-body)}
+.band{
+  height:5px;border-radius:99px;margin:22px 0 8px;
+  background:linear-gradient(90deg,var(--teal) 0%,var(--teal) 34%,var(--coral) 34%,var(--coral) 62%,var(--line) 62%);
+}
+
+/* ---------- Panels ---------- */
+.panel{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:26px 24px;margin-top:20px;box-shadow:var(--shadow);
+}
+.kicker{
+  display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--teal);
+  background:var(--teal-tint);padding:6px 12px;border-radius:99px;margin-bottom:14px;
+}
+h2.step{
+  font-family:var(--font-head);font-weight:700;font-size:1.75rem;line-height:1.14;
+  color:var(--ink);margin-bottom:6px;
+}
+h2.step .scr{
+  display:block;font-family:var(--font-script);font-weight:600;
+  font-size:1.9rem;color:var(--coral);line-height:1;margin-top:2px;
+}
+p.lead{color:var(--ink-soft);font-size:1.02rem;margin-bottom:6px}
+
+/* ---------- The system explainer ---------- */
+details.sys{
+  border:1px solid var(--line);border-radius:14px;background:var(--paper);
+  margin:18px 0 6px;overflow:hidden;
+}
+details.sys summary{
+  list-style:none;cursor:pointer;padding:16px 18px;display:flex;
+  align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+details.sys summary::-webkit-details-marker{display:none}
+.sys-label{font-weight:700;font-size:1rem;color:var(--ink)}
+.sys-cta{
+  font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--teal);white-space:nowrap;
+}
+.sys-cta .chev{display:inline-block;margin-left:6px;transition:transform .2s}
+details.sys[open] .sys-cta .chev{transform:rotate(90deg)}
+details.sys .body{padding:0 18px 20px}
+details.sys .body p{margin-bottom:12px;font-size:.98rem}
+ul.sysrules{list-style:none;margin-top:6px}
+ul.sysrules li{display:flex;gap:12px;margin-bottom:12px;font-size:.98rem}
+ul.sysrules .num{
+  flex:0 0 26px;height:26px;border-radius:50%;background:var(--teal);color:#fff;
+  font-weight:800;font-size:.85rem;display:flex;align-items:center;justify-content:center;
+}
+.payoff{
+  background:var(--coral-soft);border-radius:12px;padding:14px 16px;
+  font-size:.96rem;margin-top:14px;
+}
+.payoff b{display:block;font-family:var(--font-head);margin-bottom:2px}
+
+/* ---------- Progress ---------- */
+.progwrap{margin-bottom:18px}
+.progbar{height:10px;background:var(--teal-tint);border-radius:99px;overflow:hidden}
+.progfill{height:100%;background:var(--teal);border-radius:99px;transition:width .35s ease}
+.progtxt{
+  display:flex;justify-content:space-between;font-size:.85rem;
+  color:var(--ink-soft);font-weight:700;margin-top:8px;
+}
+
+/* ---------- Fields and options ---------- */
+.field{margin-top:18px}
+.field label,.qlabel{
+  display:block;font-weight:700;font-size:1.05rem;margin-bottom:4px;color:var(--ink);
+}
+.hint{font-weight:600;font-size:.86rem;color:var(--ink-soft)}
+.opts{display:flex;flex-direction:column;gap:11px;margin-top:14px}
 .opt{
-  display:block;width:100%;text-align:left;cursor:pointer;
-  background:var(--card);border:2px solid var(--line);border-radius:14px;
-  padding:16px 18px;font-size:1.05rem;color:var(--ink);
-  min-height:56px;transition:border-color .15s, background .15s;
+  display:block;width:100%;text-align:left;cursor:pointer;font-family:var(--font-body);
+  background:var(--paper);border:2px solid var(--line);border-radius:14px;
+  padding:15px 17px;font-size:1.02rem;font-weight:700;color:var(--ink);
+  min-height:58px;transition:border-color .15s,background .15s,transform .08s;
 }
-.opt .sub{display:block;font-size:.9rem;color:var(--ink-soft);margin-top:2px;font-weight:400}
-.opt:hover,.opt:focus-visible{border-color:var(--teal);background:var(--teal-tint)}
+.opt .sub{display:block;font-size:.88rem;font-weight:400;color:var(--ink-soft);margin-top:3px}
+.opt:hover{border-color:var(--teal);background:var(--teal-tint)}
+.opt:active{transform:translateY(1px)}
 .opt:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
-.opt strong{font-weight:600}
 
-.btn{
-  display:inline-block;cursor:pointer;border:none;border-radius:99px;
-  background:var(--teal);color:#fff;font-size:1.1rem;font-weight:600;
-  padding:16px 34px;min-height:56px;
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:22px}
+.cta{
+  cursor:pointer;border:none;border-radius:99px;font-family:var(--font-body);
+  background:var(--teal);color:#fff;font-size:1.05rem;font-weight:800;
+  padding:16px 32px;min-height:56px;transition:background .15s,transform .08s;
 }
-.btn:hover{background:var(--teal-dark)}
-.btn:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
-.btn-ghost{
-  background:none;border:none;color:var(--ink-soft);cursor:pointer;
-  font-size:1rem;padding:12px 8px;min-height:48px;text-decoration:underline;
+.cta:hover{background:var(--teal-dark)}
+.cta:active{transform:translateY(1px)}
+.cta:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+.cta.ghost{
+  background:none;color:var(--teal-dark);border:2px solid var(--line);font-weight:700;
 }
-.btn-ghost:hover{color:var(--teal-dark)}
-.nav-row{margin-top:18px}
+.cta.ghost:hover{background:var(--teal-tint);border-color:var(--teal)}
+.cta.sm{font-size:.92rem;padding:11px 18px;min-height:46px}
+.toptools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
 
-/* --- Intro --- */
-.intro{text-align:left;padding-top:8px}
-.intro .rule{
-  background:var(--card);border:1px solid var(--line);border-left:5px solid var(--teal);
-  border-radius:12px;padding:16px 18px;margin:18px 0;
+/* ---------- Results ---------- */
+.summary{
+  background:var(--teal-tint);border-radius:14px;padding:14px 18px;
+  font-size:.98rem;margin:6px 0 20px;
 }
-.intro .rule p{margin-bottom:8px}
-.intro .rule p:last-child{margin-bottom:0}
-.intro ol{margin:10px 0 0 22px}
-.intro li{margin-bottom:6px}
-.center{text-align:center}
-
-/* --- Results --- */
-.results h2.title{font-size:1.9rem;margin:20px 0 4px}
-.results .subtitle{color:var(--ink-soft);margin-bottom:20px}
-.slot-card{
+.slot{
   background:var(--card);border:1px solid var(--line);border-radius:16px;
-  padding:20px;margin-bottom:18px;box-shadow:0 10px 24px -18px rgba(30,42,71,.35);
+  padding:20px;margin-bottom:16px;box-shadow:var(--shadow);
 }
-.slot-card .slot-name{
-  font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--teal);font-weight:700;margin-bottom:4px;
+.slot .slot-no{
+  display:flex;align-items:center;gap:10px;margin-bottom:8px;
 }
-.slot-card h3{font-family:var(--font-head);color:var(--navy);font-size:1.35rem;margin-bottom:8px}
-.slot-card .why-slot{color:var(--ink-soft);font-size:.98rem;margin-bottom:14px}
-.pick{display:flex;gap:14px;align-items:flex-start}
+.slot .num{
+  flex:0 0 30px;height:30px;border-radius:50%;background:var(--teal);color:#fff;
+  font-weight:800;font-size:.95rem;display:flex;align-items:center;justify-content:center;
+}
+.slot h3{font-family:var(--font-head);font-weight:700;font-size:1.3rem;color:var(--ink)}
+.slot .why-slot{color:var(--ink-soft);font-size:.97rem;margin-bottom:16px}
+.pick{display:flex;gap:15px;align-items:flex-start}
 .pick-img{
-  flex:0 0 88px;width:88px;height:88px;border-radius:12px;background:var(--teal-tint);
-  display:flex;align-items:center;justify-content:center;flex-direction:column;
-  color:var(--teal-dark);font-weight:700;font-size:1.3rem;overflow:hidden;
+  flex:0 0 92px;width:92px;background:#fff;padding:7px 7px 7px;border-radius:3px;
+  box-shadow:var(--shadow);transform:rotate(-2deg);
 }
-.pick-img img{width:100%;height:100%;object-fit:cover}
-.pick-img .ph-note{font-size:.55rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase}
+.pick-img .ph{
+  width:100%;aspect-ratio:1;background:var(--teal-tint);border-radius:2px;
+  display:flex;align-items:center;justify-content:center;font-size:1.9rem;
+}
+.pick-img img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:2px;display:block}
+.pick-img .ph-note{
+  font-family:var(--font-script);font-size:.85rem;color:var(--ink-soft);
+  text-align:center;line-height:1;margin-top:4px;
+}
 .pick-info{flex:1;min-width:0}
-.pick-info .name{font-weight:600;font-size:1.08rem;color:var(--navy)}
-.pick-info .brand{color:var(--ink-soft);font-size:.9rem;margin-bottom:6px}
-.badge{
-  display:inline-block;background:var(--badge-bg);color:#fff;border-radius:99px;
-  font-size:.78rem;font-weight:600;padding:4px 12px;margin:4px 0 8px;
+.pick-info .name{font-family:var(--font-head);font-weight:700;font-size:1.1rem;color:var(--ink)}
+.pick-info .why{font-size:.97rem;margin:8px 0 14px}
+.badge,.fits{
+  display:inline-block;border-radius:99px;font-size:.76rem;font-weight:800;
+  padding:5px 12px;margin-top:7px;line-height:1.35;
 }
-.fits{
-  display:inline-block;background:var(--teal-tint);color:var(--teal-dark);border-radius:99px;
-  font-size:.78rem;font-weight:600;padding:4px 12px;margin:4px 0 8px;
-}
-.pick-info .why{font-size:.98rem;margin-bottom:12px}
+.badge{background:var(--coral);color:#fff}
+.fits{background:var(--teal-tint);color:var(--teal-dark)}
 .buy{
   display:inline-block;background:var(--teal);color:#fff;text-decoration:none;
-  border-radius:99px;font-weight:600;font-size:.98rem;padding:12px 22px;min-height:48px;
+  border-radius:99px;font-weight:800;font-size:.95rem;padding:13px 24px;min-height:48px;
 }
 .buy:hover{background:var(--teal-dark)}
-.verified-date{font-size:.78rem;color:var(--ink-soft);margin-top:10px}
+.checked{font-size:.78rem;color:var(--ink-soft);margin-top:10px}
 
-.tips{background:var(--teal-tint);border-radius:16px;padding:20px;margin:24px 0}
-.tips h3{font-family:var(--font-head);color:var(--navy);font-size:1.25rem;margin-bottom:10px}
-.tips ul{margin-left:20px}
-.tips li{margin-bottom:8px}
-.tips li:last-child{margin-bottom:0}
-
-.actions{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 4px}
-
-/* --- Footer --- */
-.foot{margin-top:30px;border-top:1px solid var(--line);padding-top:20px;font-size:.92rem;color:var(--ink-soft)}
-.foot p{margin-bottom:12px}
-.foot a{color:var(--teal-dark)}
-.cta{
-  background:var(--card);border:1px solid var(--line);border-radius:12px;
-  padding:16px 18px;font-size:1rem;color:var(--ink);
+.tip{
+  background:var(--coral-soft);border-radius:16px;padding:20px 22px;margin:24px 0;
 }
+.tip .lbl{
+  font-family:var(--font-script);font-size:1.5rem;color:var(--coral);
+  line-height:1;margin-bottom:10px;
+}
+.tip ul{list-style:none}
+.tip li{display:flex;gap:11px;margin-bottom:11px;font-size:.98rem}
+.tip li:last-child{margin-bottom:0}
+.tip li .dot{flex:0 0 8px;height:8px;border-radius:50%;background:var(--coral);margin-top:9px}
 
-/* --- Print --- */
+.skip-box{
+  border:2px dashed var(--line);border-radius:16px;padding:20px 22px;margin:24px 0;
+}
+.skip-box h4{font-family:var(--font-head);font-size:1.15rem;margin-bottom:10px;color:var(--ink)}
+.skip-box p{font-size:.97rem;color:var(--ink-soft)}
+
+/* ---------- Footer ---------- */
+footer{
+  margin-top:34px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:.9rem;color:var(--ink-soft);text-align:center;
+}
+footer a{color:var(--teal-dark)}
+.sig{font-family:var(--font-script);font-size:1.9rem;color:var(--coral);line-height:1;margin-bottom:8px}
+.foot-cta{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:16px 18px;font-size:1rem;color:var(--ink);margin-bottom:18px;text-align:left;
+}
+.disc{font-size:.82rem;margin-top:14px;line-height:1.5}
+footer p{margin-bottom:10px}
+
+/* ---------- Print ---------- */
 @media print{
   body{background:#fff;color:#000;font-size:12pt;padding:0}
-  .no-print,.buy,.actions,.masthead .kicker{display:none !important}
-  .slot-card{box-shadow:none;border:1px solid #999;break-inside:avoid}
-  .tips{background:#fff;border:1px solid #999}
+  .no-print,.buy,.cta-row,.toptools,.progwrap,.polaroid,.band,.kicker,.foot-cta{display:none !important}
+  .panel,.slot{box-shadow:none;border:1px solid #999;break-inside:avoid}
+  .tip,.summary{background:#fff;border:1px solid #999}
   a{color:#000;text-decoration:none}
-  .foot a[href]:after{content:" (" attr(href) ")";font-size:9pt}
 }
 
-@media (max-width:420px){
-  body{font-size:18px}
-  h1{font-size:1.7rem}
-  .pick{flex-direction:row}
-  .pick-img{flex-basis:72px;width:72px;height:72px}
+@media (max-width:520px){
+  body{font-size:17px}
+  .hero{gap:14px}
+  .hero h1{font-size:1.85rem}
+  .polaroid{flex-basis:104px;padding:8px 8px 24px}
+  .polaroid .photo{width:88px;height:88px;font-size:2rem}
+  .panel{padding:22px 18px}
+  h2.step{font-size:1.5rem}
+  h2.step .scr{font-size:1.65rem}
+  .pick-img{flex-basis:78px;width:78px}
 }
 </style>
 </head>
 <body>
+<a href="#quiz" class="skip-link">Skip to the shoe quiz</a>
 <div class="wrap">
-  <header class="masthead">
-    <div class="kicker">Ready Jet Roam</div>
-    <h1>The Shoe Finder</h1>
-    <p class="tag">Three pairs. Never more. Let's pick yours.</p>
+
+  <header class="brand">
+    <a class="brand-link" href="https://readyjetroam.com/" rel="home">
+      <span class="brand-wordmark">Ready Jet <span>Roam</span></span>
+    </a>
   </header>
 
-  <main id="app" aria-live="polite"></main>
+  <div class="hero">
+    <div class="hero-text">
+      <h1>The Shoe <span class="pop">Finder</span><br>for Women</h1>
+      <p class="tag">Tell me about your trip and I'll fill your three shoe slots. Three pairs, never more, and the right three for where you're actually going.</p>
+    </div>
+    <div class="polaroid" aria-hidden="true">
+      <div class="tape"></div>
+      <div class="photo">👟</div>
+      <div class="caption">three pairs</div>
+    </div>
+  </div>
 
-  <footer class="foot" id="site-foot"></footer>
+  <div class="band"></div>
+
+  <main id="quiz" aria-live="polite"></main>
+
+  <footer id="site-foot"></footer>
 </div>
 
 <script>
 /* =========================================================================
    DATA_LAST_REVIEWED
-   [MATT: bump this date whenever you check the links and picks.]
+   [MATT: bump this date whenever you check the links and the picks.]
    ========================================================================= */
 const DATA_LAST_REVIEWED = '2026-08-13';
 
-/* Amazon affiliate tag. Every Amazon link carries this automatically. */
+/* Amazon affiliate tag. Every Amazon link gets this automatically. */
 const AMAZON_TAG = 'readyjetroa0d-20';
 
 /* =========================================================================
    THE SHOE LIST - this is the only thing you should ever need to edit.
 
-   Each entry:
    id           unique key, keep it stable
    name         display name
    brand        brand name
    jobs         which slot(s) it can fill: 'miles', 'nice', 'wet'
-   scenarios    which trip types it suits (see SCENARIOS below for keys)
+   scenarios    which trip types it suits (keys listed in SCENARIOS below)
    sports       only for sport shoes: 'gym', 'court', 'running'
    tags         'trail' = real hiking shoe, 'winter' = warm winter boot,
                 'dressy' = dressy enough for an event
    gender       "women's" or 'unisex'
-   waterproof   true only if genuinely waterproof, not water resistant
-   amazonUrl    real product link WITH the tag, or the placeholder
-                '[AMAZON LINK - MATT]' (the tool builds a tagged Amazon
-                search link as a fallback so nothing is ever broken)
-   imageUrl     product photo URL, or '' to show a neat placeholder
-   oneLineWhy   one sentence shown on the results card
+   waterproof   true ONLY if genuinely waterproof, not water resistant
+   amazonUrl    real product link, or the placeholder '[AMAZON LINK - MATT]'
+                (until it's filled the tool builds a tagged Amazon search
+                link, so no button is ever dead)
+   imageUrl     product photo URL, or '' for a neat polaroid placeholder
+   emoji        shown in the placeholder photo
+   oneLineWhy   one sentence, shown on the results card
    lisaVerified true ONLY for pairs we personally use. Never fake this.
    verifiedBy   who actually uses it: 'Lisa', 'Matt', or "Lisa's mom"
    lastVerified date you last checked the link and the pick
@@ -235,16 +357,11 @@ const SHOES = [
     brand: 'Cole Haan',
     jobs: ['miles'],
     scenarios: ['euro-city', 'business', 'cruise'],
-    sports: [],
-    tags: [],
-    gender: "women's",
-    waterproof: false,
+    sports: [], tags: [], gender: "women's", waterproof: false,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '👟',
     oneLineWhy: "A white leather sneaker that walks all day and still looks right with a dress at dinner.",
-    lisaVerified: true,
-    verifiedBy: 'Lisa',
-    lastVerified: '2026-08-13',
+    lisaVerified: true, verifiedBy: 'Lisa', lastVerified: '2026-08-13',
     notes: "Lisa's miles pair for cities."
   },
   {
@@ -253,16 +370,11 @@ const SHOES = [
     brand: "Rothy's",
     jobs: ['nice'],
     scenarios: ['euro-city', 'rainy-shoulder', 'cruise', 'business', 'beach-town', 'long-walking', 'safari'],
-    sports: [],
-    tags: ['dressy'],
-    gender: "women's",
-    waterproof: false,
-    amazonUrl: '[ROTHYS AFFILIATE LINK - MATT]',  /* Rothy's is a separate affiliate, NOT Amazon */
-    imageUrl: '',
+    sports: [], tags: ['dressy'], gender: "women's", waterproof: false,
+    amazonUrl: '[ROTHYS AFFILIATE LINK - MATT]',  /* separate affiliate, NOT Amazon */
+    imageUrl: '', emoji: '🥿',
     oneLineWhy: "Packs flat, goes with everything, and it's machine washable. Yes, the whole shoe.",
-    lisaVerified: true,
-    verifiedBy: 'Lisa',
-    lastVerified: '2026-08-13',
+    lisaVerified: true, verifiedBy: 'Lisa', lastVerified: '2026-08-13',
     notes: "Lisa's nice pair. Rothy's link is a separate affiliate, not Amazon."
   },
   {
@@ -271,16 +383,11 @@ const SHOES = [
     brand: 'REEF',
     jobs: ['wet'],
     scenarios: ['beach-town', 'cruise', 'euro-city', 'rainy-shoulder', 'business', 'long-walking', 'safari'],
-    sports: [],
-    tags: [],
-    gender: "women's",
-    waterproof: true,
+    sports: [], tags: [], gender: "women's", waterproof: true,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '🩴',
     oneLineWhy: "Weighs nothing, dries instantly, and saves your feet from every questionable hotel shower floor.",
-    lisaVerified: true,
-    verifiedBy: 'Lisa',
-    lastVerified: '2026-08-13',
+    lisaVerified: true, verifiedBy: 'Lisa', lastVerified: '2026-08-13',
     notes: "Lisa's wet pair."
   },
   {
@@ -289,16 +396,11 @@ const SHOES = [
     brand: 'On',
     jobs: ['miles'],
     scenarios: ['rainy-shoulder', 'long-walking', 'euro-city', 'winter-city'],
-    sports: [],
-    tags: [],
-    gender: "women's",
-    waterproof: true,
+    sports: [], tags: [], gender: "women's", waterproof: true,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '👟',
     oneLineWhy: "Actually waterproof, not 'waterproof until it rains'. I wore these on the Camino de Santiago.",
-    lisaVerified: true,
-    verifiedBy: 'Lisa',
-    lastVerified: '2026-08-13',
+    lisaVerified: true, verifiedBy: 'Lisa', lastVerified: '2026-08-13',
     notes: "Lisa's wet-weather miles pair. Camino tested."
   },
   {
@@ -307,16 +409,11 @@ const SHOES = [
     brand: 'HOKA',
     jobs: ['miles'],
     scenarios: ['rainy-shoulder', 'long-walking', 'winter-city', 'safari'],
-    sports: [],
-    tags: [],
-    gender: "women's",
-    waterproof: true,
+    sports: [], tags: [], gender: "women's", waterproof: true,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '👟',
     oneLineWhy: "Gore-Tex and marshmallow cushioning. Matt wore these on the Camino and never once complained about his feet.",
-    lisaVerified: true,
-    verifiedBy: 'Matt',
-    lastVerified: '2026-08-13',
+    lisaVerified: true, verifiedBy: 'Matt', lastVerified: '2026-08-13',
     notes: "Matt's wet-weather pair. Camino tested."
   },
   {
@@ -325,187 +422,129 @@ const SHOES = [
     brand: 'Merrell',
     jobs: ['miles'],
     scenarios: ['long-walking', 'safari', 'euro-city'],
-    sports: [],
-    tags: [],
-    gender: "women's",
-    waterproof: false,
+    sports: [], tags: [], gender: "women's", waterproof: false,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '👟',
     oneLineWhy: "Sensible, sturdy, and built for real miles. My mom swears by hers and she's rarely wrong.",
-    lisaVerified: true,
-    verifiedBy: "Lisa's mom",
-    lastVerified: '2026-08-13',
+    lisaVerified: true, verifiedBy: "Lisa's mom", lastVerified: '2026-08-13',
     notes: "Lisa's mom's pick."
   },
 
   /* ---------- CANDIDATES: well reviewed, fit the job, we don't own them.
-       Keep lisaVerified false so the tool never claims we use them. ---------- */
+       lisaVerified stays false so the tool never claims we use them. ---------- */
   {
     id: 'skechers-go-walk',
     name: 'Go Walk slip-on',
     brand: 'Skechers',
     jobs: ['miles'],
     scenarios: ['beach-town', 'cruise', 'safari'],
-    sports: [],
-    tags: [],
-    gender: "women's",
-    waterproof: false,
+    sports: [], tags: [], gender: "women's", waterproof: false,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '👟',
     oneLineWhy: "Light, breathable, and slips on and off without a fight. A warm-weather walking favorite for good reason.",
-    lisaVerified: false,
-    verifiedBy: '',
-    lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
     notes: 'Candidate. Well reviewed for warm-weather walking.'
   },
   {
     id: 'nb-608-crosstrainer',
     name: '608 v5 cross trainer',
     brand: 'New Balance',
-    jobs: ['miles'],
-    scenarios: [],
-    sports: ['gym'],
-    tags: [],
-    gender: "women's",
-    waterproof: false,
+    jobs: ['miles'], scenarios: [], sports: ['gym'], tags: [],
+    gender: "women's", waterproof: false,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '🏋️',
     oneLineWhy: "A classic cross trainer that handles the hotel gym and a full day of sightseeing without needing a second pair.",
-    lisaVerified: false,
-    verifiedBy: '',
-    lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
     notes: 'Candidate. Gym pick.'
   },
   {
     id: 'asics-gel-dedicate',
     name: 'Gel-Dedicate court shoe',
     brand: 'ASICS',
-    jobs: ['miles'],
-    scenarios: [],
-    sports: ['court'],
-    tags: [],
-    gender: "women's",
-    waterproof: false,
+    jobs: ['miles'], scenarios: [], sports: ['court'], tags: [],
+    gender: "women's", waterproof: false,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '🎾',
     oneLineWhy: "A proper court shoe for pickleball or tennis that's comfortable enough to sightsee in afterward.",
-    lisaVerified: false,
-    verifiedBy: '',
-    lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
     notes: 'Candidate. Pickleball and tennis pick.'
   },
   {
     id: 'brooks-ghost-16',
     name: 'Ghost 16 running shoe',
     brand: 'Brooks',
-    jobs: ['miles'],
-    scenarios: ['long-walking'],
-    sports: ['running'],
-    tags: [],
-    gender: "women's",
-    waterproof: false,
+    jobs: ['miles'], scenarios: ['long-walking'], sports: ['running'], tags: [],
+    gender: "women's", waterproof: false,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '🏃',
     oneLineWhy: "One of the most loved neutral running shoes out there, and it doubles happily as an all-day walker.",
-    lisaVerified: false,
-    verifiedBy: '',
-    lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
     notes: 'Candidate. Running pick.'
   },
   {
     id: 'merrell-moab-3-wp',
     name: 'Moab 3 Mid Waterproof hiking boot',
     brand: 'Merrell',
-    jobs: ['wet'],
-    scenarios: ['safari', 'long-walking'],
-    sports: [],
-    tags: ['trail'],
-    gender: "women's",
-    waterproof: true,
+    jobs: ['wet'], scenarios: ['safari', 'long-walking'], sports: [], tags: ['trail'],
+    gender: "women's", waterproof: true,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '🥾',
     oneLineWhy: "One of the best-reviewed hiking boots ever made. Grippy, waterproof, and kind to ankles on rough ground.",
-    lisaVerified: false,
-    verifiedBy: '',
-    lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
     notes: 'Candidate. Trail pick for real hiking.'
   },
   {
     id: 'sorel-out-n-about',
     name: 'Out N About III waterproof boot',
     brand: 'Sorel',
-    jobs: ['wet'],
-    scenarios: ['winter-city'],
-    sports: [],
-    tags: ['winter'],
-    gender: "women's",
-    waterproof: true,
+    jobs: ['wet'], scenarios: ['winter-city'], sports: [], tags: ['winter'],
+    gender: "women's", waterproof: true,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '🥾',
     oneLineWhy: "Waterproof, warm, and grippy enough for slushy sidewalks, without looking like you're headed to the Arctic.",
-    lisaVerified: false,
-    verifiedBy: '',
-    lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
     notes: 'Candidate. Winter slush and snow pick.'
   },
   {
     id: 'blondo-waterproof-bootie',
     name: 'Villa waterproof heeled bootie',
     brand: 'Blondo',
-    jobs: ['nice'],
-    scenarios: ['winter-city'],
-    sports: [],
-    tags: ['dressy'],
-    gender: "women's",
-    waterproof: true,
+    jobs: ['nice'], scenarios: ['winter-city'], sports: [], tags: ['dressy'],
+    gender: "women's", waterproof: true,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '👢',
     oneLineWhy: "A dressy ankle boot that's actually waterproof, so a rainy walk to dinner doesn't wreck the evening.",
-    lisaVerified: false,
-    verifiedBy: '',
-    lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
     notes: 'Candidate. Dressy pick for cold, wet cities.'
   },
   {
     id: 'vionic-sandal',
     name: 'Dressy support sandal',
     brand: 'Vionic',
-    jobs: ['nice'],
-    scenarios: ['beach-town', 'cruise', 'safari'],
-    sports: [],
-    tags: ['dressy'],
-    gender: "women's",
-    waterproof: false,
+    jobs: ['nice'], scenarios: ['beach-town', 'cruise', 'safari'], sports: [], tags: ['dressy'],
+    gender: "women's", waterproof: false,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '👡',
     oneLineWhy: "A sandal with real arch support that still looks like you dressed up, not like you gave up.",
-    lisaVerified: false,
-    verifiedBy: '',
-    lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
     notes: 'Candidate. Warm-weather dinner pick.'
   },
   {
     id: 'naturalizer-block-heel',
     name: 'Vera block heel pump',
     brand: 'Naturalizer',
-    jobs: ['nice'],
-    scenarios: ['business', 'cruise'],
-    sports: [],
-    tags: ['dressy'],
-    gender: "women's",
-    waterproof: false,
+    jobs: ['nice'], scenarios: ['business', 'cruise'], sports: [], tags: ['dressy'],
+    gender: "women's", waterproof: false,
     amazonUrl: '[AMAZON LINK - MATT]',
-    imageUrl: '',
+    imageUrl: '', emoji: '👠',
     oneLineWhy: "A low block heel from a comfort brand, for when the dinner really is that kind of dinner.",
-    lisaVerified: false,
-    verifiedBy: '',
-    lastVerified: '2026-08-13',
+    lisaVerified: false, verifiedBy: '', lastVerified: '2026-08-13',
     notes: 'Candidate. Dressier backup to the flat.'
   }
 ];
 
 /* =========================================================================
-   QUIZ QUESTIONS - edit labels freely, keep the value keys stable.
+   QUIZ QUESTIONS - edit the labels freely, keep the value keys the same.
    ========================================================================= */
 const SCENARIOS = {
   'euro-city':      'The European city trip',
@@ -522,83 +561,91 @@ const QUESTIONS = [
   {
     key: 'region',
     title: "Where are you headed?",
+    scr: "the big one",
     options: [
-      { value: 'europe',     label: 'Europe' },
-      { value: 'uk-scandi',  label: 'UK, Ireland or Scandinavia' },
-      { value: 'warm',       label: 'Somewhere warm', sub: 'Beach, islands, the tropics' },
-      { value: 'usa-canada', label: 'USA or Canada' },
-      { value: 'aus-nz',     label: 'Australia or New Zealand' },
-      { value: 'mixed',      label: 'A mix, or somewhere else' }
+      { value: 'europe',     label: '🇪🇺 Europe' },
+      { value: 'uk-scandi',  label: '🌧️ UK, Ireland or Scandinavia' },
+      { value: 'warm',       label: '🏝️ Somewhere warm', sub: 'Beach, islands, the tropics' },
+      { value: 'usa-canada', label: '🍁 USA or Canada' },
+      { value: 'aus-nz',     label: '🦘 Australia or New Zealand' },
+      { value: 'mixed',      label: '🌍 A mix, or somewhere else' }
     ]
   },
   {
     key: 'season',
-    title: "What season will it be when you're there?",
-    hint: "Their season, not yours. September in Australia is spring.",
+    title: "What season will it be there?",
+    scr: "their season, not yours",
+    hint: "September in Australia is spring. Worth a second look.",
     options: [
-      { value: 'spring', label: 'Spring' },
-      { value: 'summer', label: 'Summer' },
-      { value: 'fall',   label: 'Fall / Autumn' },
-      { value: 'winter', label: 'Winter' }
+      { value: 'spring', label: '🌱 Spring' },
+      { value: 'summer', label: '☀️ Summer' },
+      { value: 'fall',   label: '🍂 Fall / Autumn' },
+      { value: 'winter', label: '❄️ Winter' }
     ]
   },
   {
     key: 'length',
     title: "How long are you going for?",
+    scr: "roughly",
     options: [
-      { value: 'short',  label: 'Under a week' },
-      { value: 'medium', label: 'One to two weeks' },
-      { value: 'long',   label: 'Longer than two weeks' }
+      { value: 'short',  label: '🗓️ Under a week' },
+      { value: 'medium', label: '🗓️ One to two weeks' },
+      { value: 'long',   label: '🗓️ Longer than two weeks' }
     ]
   },
   {
     key: 'scenario',
     title: "Which of these sounds most like your trip?",
+    scr: "pick the closest",
     options: [
-      { value: 'euro-city',      label: SCENARIOS['euro-city'],      sub: 'Cobblestones, cafes, a lot of walking' },
-      { value: 'rainy-shoulder', label: SCENARIOS['rainy-shoulder'], sub: 'Off-season prices, on-season rain' },
-      { value: 'beach-town',     label: SCENARIOS['beach-town'],     sub: 'Sand in the morning, dinner in town' },
-      { value: 'cruise',         label: SCENARIOS['cruise'],         sub: 'Sea days, port days, one dressy night' },
-      { value: 'long-walking',   label: SCENARIOS['long-walking'],   sub: 'A Camino, a walking tour, serious daily miles' },
-      { value: 'safari',         label: SCENARIOS['safari'],         sub: 'Dust, wildlife, early mornings' },
-      { value: 'winter-city',    label: SCENARIOS['winter-city'],    sub: 'Christmas markets, museums, cold toes' },
-      { value: 'business',       label: SCENARIOS['business'],       sub: "Meetings first, then you're free" }
+      { value: 'euro-city',      label: '🏙️ ' + SCENARIOS['euro-city'],      sub: 'Cobblestones, cafes, a lot of walking' },
+      { value: 'rainy-shoulder', label: '🌧️ ' + SCENARIOS['rainy-shoulder'], sub: 'Off-season prices, on-season rain' },
+      { value: 'beach-town',     label: '🏖️ ' + SCENARIOS['beach-town'],     sub: 'Sand in the morning, dinner in town' },
+      { value: 'cruise',         label: '🚢 ' + SCENARIOS['cruise'],         sub: 'Sea days, port days, one dressy night' },
+      { value: 'long-walking',   label: '🚶 ' + SCENARIOS['long-walking'],   sub: 'A Camino, a walking tour, serious daily miles' },
+      { value: 'safari',         label: '🦁 ' + SCENARIOS['safari'],         sub: 'Dust, wildlife, early mornings' },
+      { value: 'winter-city',    label: '🎄 ' + SCENARIOS['winter-city'],    sub: 'Christmas markets, museums, cold toes' },
+      { value: 'business',       label: '💼 ' + SCENARIOS['business'],       sub: "Meetings first, then you're free" }
     ]
   },
   {
     key: 'hiking',
     title: "Will you do any real hiking?",
+    scr: "be honest",
     hint: "I mean actual trails. Cobblestones don't count.",
     options: [
-      { value: 'yes', label: 'Yes, actual trails' },
-      { value: 'no',  label: 'No, just regular walking' }
+      { value: 'yes', label: '🥾 Yes, actual trails' },
+      { value: 'no',  label: '🚶 No, just regular walking' }
     ]
   },
   {
     key: 'sport',
-    title: "Will you work out or play a sport while you're away?",
+    title: "Will you work out or play a sport?",
+    scr: "while you're away",
     options: [
-      { value: 'none',    label: "No, I'm on vacation" },
-      { value: 'gym',     label: 'Gym or fitness classes' },
-      { value: 'court',   label: 'Pickleball or tennis' },
-      { value: 'running', label: 'Running' }
+      { value: 'none',    label: "🍷 No, I'm on vacation" },
+      { value: 'gym',     label: '🏋️ Gym or fitness classes' },
+      { value: 'court',   label: '🎾 Pickleball or tennis' },
+      { value: 'running', label: '🏃 Running' }
     ]
   },
   {
     key: 'dressy',
     title: "Any dressy dinners or events?",
+    scr: "the good night out",
     options: [
-      { value: 'yes', label: 'Yes, at least one' },
-      { value: 'no',  label: 'No, casual the whole way' }
+      { value: 'yes', label: '🥂 Yes, at least one' },
+      { value: 'no',  label: '👕 No, casual the whole way' }
     ]
   },
   {
     key: 'rain',
     title: "Are you expecting much rain?",
+    scr: "last one",
     options: [
-      { value: 'probably',   label: 'Probably' },
-      { value: 'not-really', label: 'Not really' },
-      { value: 'no-idea',    label: "Honestly, no idea", sub: "I'll make a sensible guess from your destination" }
+      { value: 'probably',   label: '🌧️ Probably' },
+      { value: 'not-really', label: '🌤️ Not really' },
+      { value: 'no-idea',    label: "🤷 Honestly, no idea", sub: "I'll make a sensible guess from your destination" }
     ]
   }
 ];
@@ -607,7 +654,7 @@ const QUESTIONS = [
    RECOMMENDATION LOGIC
    ========================================================================= */
 function buildContext(a){
-  // Would I call this destination genuinely wet if the user isn't sure?
+  // Would I call this destination genuinely wet if she isn't sure?
   const autoWet =
     (a.region === 'uk-scandi' && a.season !== 'summer') ||
     (a.season === 'winter' && a.region !== 'warm');
@@ -619,10 +666,7 @@ function buildContext(a){
     (a.rain === 'no-idea' && autoWet);
 
   return {
-    region: a.region,
-    season: a.season,
-    length: a.length,
-    scenario: a.scenario,
+    region: a.region, season: a.season, length: a.length, scenario: a.scenario,
     hiking: a.hiking === 'yes',
     sport: a.sport,
     dressy: a.dressy === 'yes',
@@ -648,7 +692,7 @@ function pickShoe(job, ctx, usedIds){
     return true;
   });
 
-  // Hard rules from the three-pair system:
+  // The hard rules of the three-pair system:
   if (job === 'miles'){
     if (ctx.sport !== 'none'){
       // The sport shoe BECOMES the miles pair. It doesn't get added.
@@ -683,9 +727,9 @@ function pickShoe(job, ctx, usedIds){
 function slotCopy(job, ctx){
   if (job === 'miles'){
     if (ctx.sport !== 'none'){
-      const sportName = ctx.sport === 'gym' ? 'work out' : (ctx.sport === 'court' ? 'play' : 'run');
-      let copy = "You said you'll " + sportName + " on this trip, so your sport shoe does double duty: it IS your miles pair. It doesn't get its own slot, it earns this one.";
-      if (ctx.wetClimate) copy += " Fair warning: it's not waterproof, so pack a spare pair of merino socks and let it dry overnight.";
+      const doing = ctx.sport === 'gym' ? 'work out' : (ctx.sport === 'court' ? 'play' : 'run');
+      let copy = "You said you'll " + doing + " on this trip, so your sport shoe does double duty: it IS your miles pair. It doesn't get its own slot, it earns this one.";
+      if (ctx.wetClimate) copy += " Fair warning: it isn't waterproof, so pack spare merino socks and let it dry overnight.";
       return copy;
     }
     if (ctx.wetClimate){
@@ -716,9 +760,9 @@ function slotCopy(job, ctx){
 }
 
 const TIPS = {
-  plane:  "Wear your bulkiest pair on the plane. Suitcase space is for the light stuff.",
-  breakin:"Break new shoes in for a few weeks before you go, never the week you fly. Wet feet are annoying. Wet feet in a shoe you're also breaking in is a bad day.",
-  merino: "Pack merino socks. Merino insulates even when it's damp. Cotton doesn't."
+  plane:   "Wear your bulkiest pair on the plane. Suitcase space is for the light stuff.",
+  breakin: "Break new shoes in for a few weeks before you go, never the week you fly. Wet feet are annoying. Wet feet in a shoe you're also breaking in is a bad day.",
+  merino:  "Pack merino socks. Merino insulates even when it's damp. Cotton doesn't."
 };
 
 function pickTips(ctx){
@@ -740,16 +784,15 @@ function recommend(answers){
   return { ctx: ctx, slots: slots, tips: pickTips(ctx) };
 }
 
-/* Builds a working buy link. Real URLs pass through untouched; placeholder
-   entries fall back to a tagged Amazon search so no button is ever dead. */
+/* Builds a working buy link. Real URLs pass through untouched; placeholders
+   fall back to a tagged Amazon search so no button is ever dead. */
 function buyUrl(shoe){
   const url = (shoe.amazonUrl || '').trim();
   if (url.indexOf('http') === 0) return url;
   if (url.indexOf('ROTHYS') !== -1) return 'https://rothys.com/';
-  const q = encodeURIComponent(shoe.brand + ' ' + shoe.name + " women");
+  const q = encodeURIComponent(shoe.brand + ' ' + shoe.name + ' women');
   return 'https://www.amazon.com/s?k=' + q + '&tag=' + AMAZON_TAG;
 }
-
 function buyLabel(shoe){
   if ((shoe.amazonUrl || '').indexOf('ROTHYS') !== -1) return "See it at Rothy's";
   return 'See it on Amazon';
@@ -760,10 +803,10 @@ function buyLabel(shoe){
    ========================================================================= */
 if (typeof document !== 'undefined'){ (function(){
 
-  const app = document.getElementById('app');
+  const app = document.getElementById('quiz');
   const foot = document.getElementById('site-foot');
   const answers = {};
-  let step = -1; // -1 = intro screen
+  let step = -1; // -1 = the intro panel
 
   function esc(s){
     return String(s).replace(/[&<>"']/g, function(c){
@@ -775,30 +818,38 @@ if (typeof document !== 'undefined'){ (function(){
 
   function renderFooter(showMaintenance){
     let html = '';
-    html += '<div class="cta no-print">Want the rest of your suitcase sorted too? Try my free <a href="https://readyjetroam.com/packing-app/">Packing Assistant</a>.</div>';
-    html += '<p style="margin-top:16px">As an Amazon Associate I earn a small commission if you purchase through our links - at no extra cost to you :)</p>';
+    html += '<div class="foot-cta no-print">Want the rest of your suitcase sorted too? Try my free <a href="https://readyjetroam.com/packing-app/">Packing Assistant</a>.</div>';
+    html += '<div class="sig">Lisa</div>';
     if (showMaintenance){
       html += '<p>Found a link that\'s out of stock or a pair I should know about? Hit reply on any newsletter or email <a href="mailto:lisa@readyjetroam.com">lisa@readyjetroam.com</a> - I keep this updated.</p>';
     }
-    html += '<p>Recommendations last reviewed: ' + esc(DATA_LAST_REVIEWED) + '</p>';
+    html += '<p class="disc">As an Amazon Associate I earn a small commission if you purchase through our links - at no extra cost to you :)</p>';
+    html += '<p class="disc">Recommendations last reviewed: ' + esc(DATA_LAST_REVIEWED) + '</p>';
     foot.innerHTML = html;
   }
 
   function renderIntro(){
     app.innerHTML =
-      '<div class="intro">' +
-        '<div class="rule">' +
-          "<p><strong>Here's my whole packing philosophy in one rule:</strong> you never pack more than three pairs of shoes, because every pair has a job.</p>" +
-          '<ol>' +
-            "<li><strong>The miles pair</strong> - whatever you'll walk 20,000 steps in without regret.</li>" +
-            "<li><strong>The nice pair</strong> - whatever gets you into dinner feeling like yourself.</li>" +
-            "<li><strong>The wet pair</strong> - beach, pool, hotel shower, rain. Whatever your trip's version of water is.</li>" +
-          '</ol>' +
-        '</div>' +
-        "<p>The shoes change by trip. The number never does. Answer eight quick questions and I'll fill your three slots for this specific trip. Takes about a minute, no email required.</p>" +
-        '<div class="nav-row center" style="margin-top:24px">' +
-          '<button class="btn" id="start-btn">Find my three pairs</button>' +
-        '</div>' +
+      '<div class="panel">' +
+        '<span class="kicker">Your Three Pairs</span>' +
+        '<details class="sys" open>' +
+          '<summary>' +
+            '<span class="sys-label">I never pack more than three pairs of shoes. Here\'s why:</span>' +
+            '<span class="sys-cta">READ THIS FIRST<span class="chev">&rsaquo;</span></span>' +
+          '</summary>' +
+          '<div class="body">' +
+            "<p>Shoes are the number one space-waster in a suitcase, and most of us overpack them because we're guessing. So I stopped guessing. Every pair I bring has to fill one of three jobs, and if it doesn't fill one, it doesn't come.</p>" +
+            '<ul class="sysrules">' +
+              '<li><span class="num">1</span><div><b>The miles pair.</b> Whatever you\'ll walk 20,000 steps in without regret.</div></li>' +
+              '<li><span class="num">2</span><div><b>The nice pair.</b> Whatever gets you into dinner feeling like yourself.</div></li>' +
+              '<li><span class="num">3</span><div><b>The wet pair.</b> Beach, pool, hotel shower, rain. Whatever your trip\'s version of water is.</div></li>' +
+            '</ul>' +
+            '<div class="payoff"><b>The payoff</b>The shoes change by trip. The number never does. That\'s the whole system, and it\'s why I haven\'t checked a bag in years.</div>' +
+          '</div>' +
+        '</details>' +
+        '<h2 class="step" style="margin-top:22px">Let\'s fill your three slots<span class="scr">for this trip</span></h2>' +
+        '<p class="lead">Eight quick questions, about a minute. No email, no signup, and I\'ll tell you honestly which pairs I actually own and which ones just fit the job.</p>' +
+        '<div class="cta-row"><button class="cta" id="start-btn">Find my three pairs &rarr;</button></div>' +
       '</div>';
     document.getElementById('start-btn').addEventListener('click', function(){
       step = 0; render();
@@ -810,19 +861,22 @@ if (typeof document !== 'undefined'){ (function(){
     const q = QUESTIONS[step];
     const pct = Math.round((step / QUESTIONS.length) * 100);
     let html =
-      '<div class="progress no-print">' +
-        '<div class="label">Question ' + (step + 1) + ' of ' + QUESTIONS.length + '</div>' +
-        '<div class="bar"><span style="width:' + pct + '%"></span></div>' +
-      '</div>' +
-      '<div class="question">' +
-        '<h2>' + esc(q.title) + '</h2>' +
-        (q.hint ? '<p class="hint">' + esc(q.hint) + '</p>' : '') +
-        '<div class="options">';
+      '<div class="panel">' +
+        '<div class="toptools no-print"><button class="cta ghost sm" id="back-btn">&larr; Back</button></div>' +
+        '<div class="progwrap no-print">' +
+          '<div class="progbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '" aria-label="Quiz progress">' +
+            '<div class="progfill" style="width:' + pct + '%"></div>' +
+          '</div>' +
+          '<div class="progtxt"><span>Question ' + (step + 1) + ' of ' + QUESTIONS.length + '</span><span>' + pct + '%</span></div>' +
+        '</div>' +
+        '<h2 class="step">' + esc(q.title) + (q.scr ? '<span class="scr">' + esc(q.scr) + '</span>' : '') + '</h2>' +
+        (q.hint ? '<p class="lead">' + esc(q.hint) + '</p>' : '') +
+        '<div class="opts">';
     q.options.forEach(function(o){
-      html += '<button class="opt" data-value="' + esc(o.value) + '"><strong>' + esc(o.label) + '</strong>' +
+      html += '<button class="opt" data-value="' + esc(o.value) + '">' + esc(o.label) +
               (o.sub ? '<span class="sub">' + esc(o.sub) + '</span>' : '') + '</button>';
     });
-    html += '</div><div class="nav-row"><button class="btn-ghost" id="back-btn">&larr; Back</button></div></div>';
+    html += '</div></div>';
     app.innerHTML = html;
 
     app.querySelectorAll('.opt').forEach(function(btn){
@@ -836,26 +890,27 @@ if (typeof document !== 'undefined'){ (function(){
     document.getElementById('back-btn').addEventListener('click', function(){
       step -= 1;
       render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     renderFooter(false);
   }
 
-  function shoeCard(slot){
+  function slotCard(slot, index){
     const shoe = slot.shoe;
-    let html = '<div class="slot-card">';
-    html += '<div class="slot-name">' + esc(SLOT_NAMES[slot.job]) + '</div>';
+    let html = '<div class="slot">';
+    html += '<div class="slot-no"><span class="num">' + (index + 1) + '</span><h3>' + esc(SLOT_NAMES[slot.job]) + '</h3></div>';
     html += '<p class="why-slot">' + esc(slot.why) + '</p>';
     if (!shoe){
       html += "<p>I don't have a pick loaded for this combination yet. Email me and I'll fix that.</p></div>";
       return html;
     }
-    html += '<div class="pick">';
+    html += '<div class="pick"><div class="pick-img">';
     if (shoe.imageUrl){
-      html += '<div class="pick-img"><img src="' + esc(shoe.imageUrl) + '" alt="' + esc(shoe.brand + ' ' + shoe.name) + '"></div>';
+      html += '<img src="' + esc(shoe.imageUrl) + '" alt="' + esc(shoe.brand + ' ' + shoe.name) + '">';
     } else {
-      html += '<div class="pick-img" aria-hidden="true"><span>' + esc(shoe.brand.charAt(0)) + '</span><span class="ph-note">photo soon</span></div>';
+      html += '<div class="ph" aria-hidden="true">' + esc(shoe.emoji || '👟') + '</div><div class="ph-note">photo soon</div>';
     }
-    html += '<div class="pick-info">';
+    html += '</div><div class="pick-info">';
     html += '<div class="name">' + esc(shoe.brand + ' ' + shoe.name) + '</div>';
     if (shoe.lisaVerified){
       const who = shoe.verifiedBy || 'Lisa';
@@ -868,29 +923,43 @@ if (typeof document !== 'undefined'){ (function(){
     }
     html += '<p class="why">' + esc(shoe.oneLineWhy) + '</p>';
     html += '<a class="buy" href="' + esc(buyUrl(shoe)) + '" target="_blank" rel="noopener sponsored">' + esc(buyLabel(shoe)) + '</a>';
-    html += '<div class="verified-date" title="The date I last checked this link and this pick">Link checked: ' + esc(shoe.lastVerified) + '</div>';
+    html += '<div class="checked" title="The date I last checked this link and this pick">Link checked: ' + esc(shoe.lastVerified) + '</div>';
     html += '</div></div></div>';
     return html;
   }
 
   function renderResults(){
     const rec = recommend(answers);
-    let html = '<div class="results">';
-    html += '<h2 class="title">Your three pairs</h2>';
-    html += '<p class="subtitle">For ' + esc((SCENARIOS[rec.ctx.scenario] || 'your trip').toLowerCase()) + '. Three slots, three shoes, zero regrets.</p>';
-    rec.slots.forEach(function(slot){ html += shoeCard(slot); });
-    html += '<div class="tips"><h3>Before you zip the suitcase</h3><ul>';
-    rec.tips.forEach(function(t){ html += '<li>' + esc(t) + '</li>'; });
-    html += '</ul></div>';
-    html += '<div class="actions no-print">' +
-              '<button class="btn" id="print-btn">Print or save this</button>' +
-              '<button class="btn-ghost" id="retake-btn">Start over</button>' +
-            '</div>';
+    let html = '<div class="panel">';
+    html += '<div class="toptools no-print"><button class="cta ghost sm" id="retake-btn">&larr; Change my answers</button></div>';
+    html += '<span class="kicker">Your Packing List</span>';
+    html += '<h2 class="step">Your three pairs<span class="scr">that\'s the whole list</span></h2>';
+    html += '<div class="summary">For ' + esc((SCENARIOS[rec.ctx.scenario] || 'your trip').toLowerCase()) + '. Three slots, three shoes, and nothing you\'ll regret carrying up a flight of stairs.</div>';
     html += '</div>';
+
+    rec.slots.forEach(function(slot, i){ html += slotCard(slot, i); });
+
+    html += '<div class="tip"><div class="lbl">Before you zip the suitcase</div><ul>';
+    rec.tips.forEach(function(t){ html += '<li><span class="dot"></span><span>' + esc(t) + '</span></li>'; });
+    html += '</ul></div>';
+
+    html += '<div class="skip-box"><h4>🚫 What doesn\'t make the cut</h4>' +
+            '<p>A fourth pair "just in case." There\'s no fourth job, so there\'s no fourth pair. If a shoe isn\'t the miles pair, the nice pair, or the wet pair, it\'s just weight you carry through an airport.</p></div>';
+
+    html += '<div class="cta-row no-print">' +
+              '<button class="cta" id="print-btn">🖨️ Print / Save this list</button>' +
+              '<button class="cta ghost" id="reset-btn">Start over</button>' +
+            '</div>';
+
     app.innerHTML = html;
 
     document.getElementById('print-btn').addEventListener('click', function(){ window.print(); });
     document.getElementById('retake-btn').addEventListener('click', function(){
+      step = QUESTIONS.length - 1;
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    document.getElementById('reset-btn').addEventListener('click', function(){
       for (const k in answers) delete answers[k];
       step = -1;
       render();
