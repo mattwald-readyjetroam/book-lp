@@ -1,0 +1,43 @@
+# =====================================================================
+# Deploy the new main site (the /site folder) to a host.
+#
+# This is a TEMPLATE and is set to manual-trigger only (workflow_dispatch),
+# so it will NOT run automatically and will NOT affect the existing
+# GitHub Pages deploy of the guides landing page. Wire the secrets below,
+# then run it from the Actions tab when you're ready.
+#
+# It shows the DreamHost (rsync-over-SSH) path. If you instead connect the
+# repo to Cloudflare Pages / Netlify / GitHub Pages, you don't need this
+# file at all — those hosts build on push with no workflow to maintain.
+# =====================================================================
+name: Deploy site (manual)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- Option A: DreamHost via rsync over SSH ---
+      # Add these repo secrets first (Settings → Secrets → Actions):
+      #   DEPLOY_SSH_KEY   — a private key whose public half is in the
+      #                      DreamHost user's ~/.ssh/authorized_keys
+      #   DEPLOY_HOST      — e.g. iad1-shared-xxxx.dreamhost.com
+      #   DEPLOY_USER      — your DreamHost shell user
+      #   DEPLOY_PATH      — e.g. /home/USER/readyjetroam.com
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Rsync site/ to DreamHost
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_ed25519" \
+            site/ \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/"

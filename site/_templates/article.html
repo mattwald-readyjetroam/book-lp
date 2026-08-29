@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!-- =====================================================================
+     ARTICLE TEMPLATE  —  copy this file into /articles/your-slug.html
+     Fill in every {{PLACEHOLDER}}. Keep the SHARED HEADER and SHARED
+     FOOTER identical to index.html. Delete this comment when done.
+     ===================================================================== -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}} — Ready Jet Roam</title>
+<meta name="description" content="{{META_DESCRIPTION}}">
+<link rel="icon" type="image/png" href="https://readyjetroam.com/wp-content/uploads/2020/10/green-icon-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body data-page="{{SLUG}}">
+
+<!-- ================= SHARED HEADER — keep in sync with index.html ================= -->
+<div class="topbar">Ready Jet Roam · <b>travel better, smarter, cheaper</b></div>
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="../index.html">Ready Jet <em>Roam</em></a>
+    <button class="nav-toggle" aria-label="Menu">☰</button>
+    <div class="nav-links">
+      <a href="index.html">Articles</a>
+      <a href="../index.html#packing-app">Packing App</a>
+      <a href="https://shop.readyjetroam.com" data-evt="shop_click" data-evt-label="nav">Books</a>
+      <a href="../about.html">About</a>
+      <a class="nav-cta" href="../index.html#newsletter">Newsletter</a>
+    </div>
+  </div>
+</nav>
+<!-- ================= /SHARED HEADER ================= -->
+
+<article>
+  <div class="article">
+    <span class="kicker">{{CATEGORY}}</span>
+    <h1>{{TITLE}}</h1>
+    <p class="dek">{{ONE_SENTENCE_PROMISE}}</p>
+    <div class="byline">
+      <img src="../assets/img/lisa.jpg" alt="Lisa">
+      <span>By <b>Lisa</b> · Ready Jet Roam · {{DATE}}</span>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>{{STRONG_INTRO — set up the problem and promise the payoff.}}</p>
+
+    <h2>{{SECTION HEADING}}</h2>
+    <p>{{BODY. Use <a href="#">natural links</a> where they help the reader.}}</p>
+
+    <!-- AFFILIATE CONTENT BLOCK — duplicate as needed -->
+    <div class="affiliate">
+      <div class="k">Recommended</div>
+      <h3>{{PARTNER / PRODUCT}}</h3>
+      <p>{{Why you recommend it, in your own voice.}}</p>
+      <a class="btn btn-primary" href="{{AFFILIATE_URL}}"
+         data-evt="affiliate_click" data-evt-label="{{PARTNER_SLUG}}" data-evt-page="{{SLUG}}"
+         rel="sponsored nofollow" target="_blank">{{CTA}} →</a>
+    </div>
+
+    <p class="disclosure">Some links on this page are affiliate links. If you buy through them I may earn a small commission at no extra cost to you.</p>
+
+    <!-- INLINE NEWSLETTER CTA -->
+    <div class="inline-news">
+      <h3>Liked this?</h3>
+      <p>Get one useful travel email like it every week.</p>
+      <a class="btn btn-primary" href="../index.html#newsletter">Join the newsletter →</a>
+    </div>
+
+    <!-- TESTIMONIAL SLOT (pull-quote or screenshot — see index.html) -->
+    <figure class="tq" style="margin:30px 0">
+      <blockquote>{{READER_QUOTE}}</blockquote>
+      <cite>— <b>{{NAME}}</b>, {{PLACE}}</cite>
+    </figure>
+  </div>
+
+  <!-- RELATED ARTICLES -->
+  <div class="wrap" style="padding-top:20px;padding-bottom:8px">
+    <div class="plane-rule">✈</div>
+    <h2 style="text-align:center;margin:26px 0 22px;font-size:1.6rem">Keep reading</h2>
+    <div class="related">
+      <a class="rel-card" href="#"><div class="rc-body"><span class="k">{{CATEGORY}}</span><h4>{{RELATED_TITLE}}</h4></div></a>
+      <a class="rel-card" href="#"><div class="rc-body"><span class="k">{{CATEGORY}}</span><h4>{{RELATED_TITLE}}</h4></div></a>
+      <a class="rel-card" href="#"><div class="rc-body"><span class="k">{{CATEGORY}}</span><h4>{{RELATED_TITLE}}</h4></div></a>
+    </div>
+  </div>
+</article>
+
+<!-- NEWSLETTER BAND -->
+<section class="news" id="newsletter">
+  <div class="wrap news-inner">
+    <h2>One useful travel email a week</h2>
+    <p>Smarter, safer, cheaper travel — straight to your inbox. Free.</p>
+    <form class="news-form" data-evt="newsletter_signup" action="https://newsletter.readyjetroam.com" method="post">
+      <input type="email" name="email" placeholder="you@email.com" required>
+      <button class="btn btn-primary" type="submit">Subscribe →</button>
+    </form>
+  </div>
+</section>
+
+<!-- ================= SHARED FOOTER — keep in sync with index.html ================= -->
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col" style="max-width:320px">
+        <p class="tagline">Travel better, smarter, cheaper.</p>
+        <p style="color:#9aa2b5">Ready Jet Roam is Lisa's brand — guides, a newsletter, and tools for travelling smarter and safer.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Explore</h5>
+        <a href="index.html">Articles</a>
+        <a href="../index.html#packing-app">Packing App</a>
+        <a href="https://shop.readyjetroam.com">Books &amp; Guides</a>
+        <a href="../about.html">About Lisa</a>
+      </div>
+      <div class="foot-col">
+        <h5>Follow</h5>
+        <a href="https://instagram.com">Instagram</a>
+        <a href="https://tiktok.com">TikTok</a>
+        <a href="https://facebook.com">Facebook</a>
+      </div>
+    </div>
+    <div class="fnote">© <span id="yr">2026</span> Ready Jet Roam. Some links are affiliate links — they cost you nothing and help support the work.</div>
+  </div>
+</footer>
+<!-- ================= /SHARED FOOTER ================= -->
+
+<script src="../assets/rjr.js"></script>
+<script>document.getElementById('yr').textContent=new Date().getFullYear()</script>
+</body>
+</html>
